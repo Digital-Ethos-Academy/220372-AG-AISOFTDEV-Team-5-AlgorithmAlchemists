@@ -1,13 +1,29 @@
 [
   {
+    "id": 11,
+    "timestamp": "2025-11-05T19:15:04Z",
+    "question": "Implement branching instructions and push outstanding changes under a new prompt branch.",
+    "summary": "Created prompt branch, removed deprecated script, added manual logging entry and prepared commit per strategy.",
+    "link": "2025-11-05T19-15-04Z-id-011-response.md",
+    "tags": ["branching","logging","docs"],
+    "hash": "HASH_PENDING"
+  },
+  {
+    "id": 10,
+    "timestamp": "2025-11-05T19:03:07Z",
+    "question": "Use all attached files for context. Execute chatlog instructions then remove the logging script.",
+    "summary": "Logged turn manually; added entry ID 10 and deprecated logging script removed for future manual maintenance.",
+    "link": "2025-11-05T19-03-07Z-id-010-response.md",
+    "tags": ["logging","cleanup"],
+    "hash": "HASH_PENDING"
+  },
+  {
     "id": 9,
     "timestamp": "2025-11-05T18:59:21Z",
-    "question": "Use #file:RAG_Navigator_PRD.md and #file:BOOTSTRAP.md and #file:index.json and #file:chatlog_instructions.md and #file:index.md and #file:transcript.md and all\u2026",
-    "summary": "Executing instructions: 1) Applied chatlog protocol (new entry ID 9: added row to index.md, created full response file, appended transcript). 2) Preparing prompt branch per branching strategy with\u2026",
-    "link": "(2025-11-05T18-59-21Z-id-009-response.md",
-    "tags": [
-      "rag"
-    ],
+    "question": "Use PRD, bootstrap, indexes and instructions to execute logging and branching.",
+    "summary": "Applied chatlog protocol (ID 9) and prepared prompt branch per branching strategy.",
+    "link": "2025-11-05T18-59-21Z-id-009-response.md",
+    "tags": ["rag"],
     "hash": "HASH_PENDING"
   },
   {
@@ -15,11 +31,8 @@
     "timestamp": "2025-11-05T00:08:00Z",
     "question": "Execute chat logging creation with specified format.",
     "summary": "Confirmed execution; preparing scaffold and backfill.",
-    "link": "(2025-11-05T00-08-00Z-id-008-response.md",
-    "tags": [
-      "logging",
-      "setup"
-    ],
+    "link": "2025-11-05T00-08-00Z-id-008-response.md",
+    "tags": ["logging","setup"],
     "hash": "HASH_PENDING"
   },
   {
@@ -27,11 +40,8 @@
     "timestamp": "2025-11-05T00:07:00Z",
     "question": "Provide final preferences (C summary, ISO timestamps, backfill, etc.).",
     "summary": "Collected logging configuration choices for implementation.",
-    "link": "(2025-11-05T00-07-00Z-id-007-response.md",
-    "tags": [
-      "logging",
-      "config"
-    ],
+    "link": "2025-11-05T00-07-00Z-id-007-response.md",
+    "tags": ["logging","config"],
     "hash": "HASH_PENDING"
   },
   {
@@ -39,11 +49,8 @@
     "timestamp": "2025-11-05T00:06:00Z",
     "question": "Request minimal prompt/response documentation only.",
     "summary": "Pivot acknowledged to pure conversation logging without app build.",
-    "link": "(2025-11-05T00-06-00Z-id-006-response.md",
-    "tags": [
-      "pivot",
-      "logging"
-    ],
+    "link": "2025-11-05T00-06-00Z-id-006-response.md",
+    "tags": ["pivot","logging"],
     "hash": "HASH_PENDING"
   },
   {
@@ -51,11 +58,8 @@
     "timestamp": "2025-11-05T00:05:00Z",
     "question": "Desire to track all prompts and responses automatically.",
     "summary": "Asked focused questions to tailor prompt logging pipeline.",
-    "link": "(2025-11-05T00-05-00Z-id-005-response.md",
-    "tags": [
-      "logging",
-      "questions"
-    ],
+    "link": "2025-11-05T00-05-00Z-id-005-response.md",
+    "tags": ["logging","questions"],
     "hash": "HASH_PENDING"
   },
   {
@@ -63,11 +67,8 @@
     "timestamp": "2025-11-05T00:04:00Z",
     "question": "Approved creation of comprehensive context document.",
     "summary": "Created PROJECT_CONTEXT.md and confirmed completion status.",
-    "link": "(2025-11-05T00-04-00Z-id-004-response.md",
-    "tags": [
-      "context",
-      "documentation"
-    ],
+    "link": "2025-11-05T00-04-00Z-id-004-response.md",
+    "tags": ["context","documentation"],
     "hash": "HASH_PENDING"
   },
   {
@@ -75,12 +76,8 @@
     "timestamp": "2025-11-05T00:03:00Z",
     "question": "Provided extended project parameters (RAG emphasis, stack choices).",
     "summary": "Synthesized decisions into planned PROJECT_CONTEXT.md outline for approval.",
-    "link": "(2025-11-05T00-03-00Z-id-003-response.md",
-    "tags": [
-      "planning",
-      "RAG",
-      "outline"
-    ],
+    "link": "2025-11-05T00-03-00Z-id-003-response.md",
+    "tags": ["planning","RAG","outline"],
     "hash": "HASH_PENDING"
   },
   {
@@ -88,11 +85,8 @@
     "timestamp": "2025-11-05T00:02:00Z",
     "question": "Answered initial clarifying question set about project scope.",
     "summary": "Produced follow-up targeted question list to refine plan.",
-    "link": "(2025-11-05T00-02-00Z-id-002-response.md",
-    "tags": [
-      "requirements",
-      "clarification"
-    ],
+    "link": "2025-11-05T00-02-00Z-id-002-response.md",
+    "tags": ["requirements","clarification"],
     "hash": "HASH_PENDING"
   },
   {
@@ -100,11 +94,8 @@
     "timestamp": "2025-11-05T00:01:00Z",
     "question": "Request to analyze README & integration guide and create a plan.",
     "summary": "Established initial structured todo list and approach.",
-    "link": "(2025-11-05T00-01-00Z-id-001-response.md",
-    "tags": [
-      "planning",
-      "initial"
-    ],
+    "link": "2025-11-05T00-01-00Z-id-001-response.md",
+    "tags": ["planning","initial"],
     "hash": "HASH_PENDING"
   }
 ]
