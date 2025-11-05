@@ -1,0 +1,15 @@
+{
+  "files": [
+    {"name": "execution_order.md", "hash": "HASH_PENDING"},
+    {"name": "branching_instructions.md", "hash": "HASH_PENDING"},
+    {"name": "agent-workflow.md", "hash": "HASH_PENDING"},
+    {"name": "automation.md", "hash": "HASH_PENDING"},
+    {"name": "integrity.md", "hash": "HASH_PENDING"},
+    {"name": "chatlog.md", "hash": "HASH_PENDING"},
+    {"name": "multi-agent-coordination.md", "hash": "HASH_PENDING"}
+  ],
+  "schema_version": 1,
+  "hash_scope": "normalized-file-content",
+  "hash_algorithm": "SHA256",
+  "status": "pending-implementation"
+}
