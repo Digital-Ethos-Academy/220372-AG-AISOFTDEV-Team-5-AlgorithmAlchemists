@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "generated": "2025-11-05",
+  "fr": [
+    {"id": "FR1", "endpoint": "GET /overview", "payload_schema": "overview.schema.json", "tests": ["test_fr1_overview_success"], "metrics": ["compression_pct"], "owner": "Product", "status": "PLANNED"},
+    {"id": "FR2", "endpoint": "GET /org", "payload_schema": "org.schema.json", "tests": ["test_fr2_org_hierarchy"], "metrics": ["comprehension_score"], "owner": "Eng Lead", "status": "PLANNED"},
+    {"id": "FR3", "endpoint": "GET /roles", "payload_schema": "roles.schema.json", "tests": ["test_fr3_roles_lookup_exact", "test_fr3_roles_lookup_fuzzy"], "metrics": ["confidence_coverage"], "owner": "Eng Lead", "status": "PLANNED"},
+    {"id": "FR4", "endpoint": "POST /qa", "payload_schema": "qa.schema.json", "tests": ["test_fr4_qa_confidence_threshold"], "metrics": ["confidence_coverage"], "owner": "Data Engineer", "status": "PLANNED"},
+    {"id": "FR5", "endpoint": "POST /recommendation", "payload_schema": "recommendation.schema.json", "tests": ["test_fr5_recommendation_scoring"], "metrics": ["placement_accuracy"], "owner": "Eng Lead", "status": "PLANNED"},
+    {"id": "FR6", "endpoint": "GET /quiz, POST /quiz/submit", "payload_schema": "quiz.schema.json", "tests": ["test_fr6_quiz_questions_count", "test_fr6_quiz_submit_all_correct"], "metrics": ["comprehension_score"], "owner": "Product", "status": "PLANNED"},
+    {"id": "FR7", "endpoint": "GET /metrics", "payload_schema": "metrics.schema.json", "tests": ["test_fr7_metrics_payload"], "metrics": ["compression_pct", "comprehension_score", "confidence_coverage"], "owner": "Product", "status": "PLANNED"},
+    {"id": "FR8", "endpoint": "GET /gaps", "payload_schema": "gaps.schema.json", "tests": ["test_fr8_gaps_detection"], "metrics": ["gap_detection_rate"], "owner": "Knowledge Curator", "status": "PLANNED"},
+    {"id": "FR9", "endpoint": "POST /qa (fallback path)", "payload_schema": "fallback.schema.json", "tests": ["test_fr9_fallback_escalation"], "metrics": ["confidence_coverage"], "owner": "Engineering", "status": "PLANNED"}
+  ]
+}

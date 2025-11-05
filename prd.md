@@ -1,5 +1,16 @@
 # Product Requirements Document (PRD)
 
+---
+doc_id: POIT-PRD
+version: 1.0.0
+status: Active
+owners: ["Product", "Engineering Lead", "Compliance"]
+last_reviewed: 2025-11-05
+next_review_due: 2025-12-05
+change_control: "Semantic versioning; High impact changes require Product + Engineering + Compliance approval."
+integrations_flagged_for_future: true
+---
+
 ## 1. Executive Summary
 A 500-person project experiences context loss after initial onboarding: new and existing members struggle to recall the project purpose, organizational structure, responsibilities, and escalation paths. This reduces productivity, increases misalignment, and prolongs onboarding beyond acceptable timeframes. We will build a Project Orientation Intelligence Tool (POIT) that compresses orientation time and guarantees factual accuracy for core project knowledge.
 
@@ -140,6 +151,19 @@ skinparam componentStyle rectangle
 - Confidence = normalized score / 100.
 - Rationale template: "User <name> with role <role> and tenure <tenure_days>d mapped to <team_name> due to <top_responsibility> alignment (score <score>)."
 
+## 12.1 Recommendation Scoring Schema
+```json
+{
+	"input": {"user_id": "U123", "role": "Backend Engineer", "tenure_days": 45, "activity_state": "drifting"},
+	"candidates": [
+		{"team_id": "T7", "role_match": 50, "responsibility_overlap": 25, "need_score": 15, "total": 90, "confidence": 0.90,
+		 "rationale": "Role alignment + API maintenance overlap + team vacancy"}
+	],
+	"selected_team_id": "T7",
+	"selected_confidence": 0.90
+}
+```
+
 ## 13. Q&A Retrieval Approach
 - Index facts by category & token set.
 - For query: tokenize, compute overlap score; return highest scoring fact(s).
@@ -237,4 +261,109 @@ Compression = (56 - 20) / 56 * 100 = 64.29% (PASS ≥60%).
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 0.1 | 2025-11-05 | Draft | Initial PRD creation |
+| 1.0.0 | 2025-11-05 | Product + Eng | Added governance, scoring schema, integration roadmap, traceability expansion |
+
+## 30. Integration Roadmap & Readiness Checklist
+### 30.1 Priority Order (Demo -> Future)
+1. SSO / Directory (foundational identity)
+2. HRIS (authoritative roles & tenure)
+3. Slack (team channel mapping & engagement signals)
+4. Jira (workstream / ownership reinforcement)
+5. Embeddings Store (semantic upgrade for retrieval)
+
+### 30.2 Readiness Checklist Template
+| Item | Description | Status |
+|------|-------------|--------|
+| Data Contract | JSON schema agreed and versioned | PENDING |
+| Auth Mode | OAuth2 / SAML integration spec | PENDING |
+| Latency Budget | p95 < 800ms per external call | PENDING |
+| Failure Policy | Circuit breaker + graceful degradation | PENDING |
+| Rollback Plan | Disable integration feature flag | PENDING |
+| Observability | Metrics + error rate + retries logged | PENDING |
+| Security Review | Secrets scanned, least-privilege validated | PENDING |
+
+## 31. Expanded Risk Playbooks
+| Risk | Trigger Signal | Immediate Action | Fallback | Owner | Verification |
+|------|----------------|------------------|----------|-------|-------------|
+| Recommendation Misassignment | Accuracy < 85% in validation set | Enable REC_DISABLE flag | Show manual team selector | Eng Lead | Re-run accuracy test suite |
+| Retrieval Confidence Collapse | Confidence coverage < 95% | Regenerate index cache | Route low-confidence to mentor escalation | Data Engineer | Coverage metric restored ≥ 98% |
+| Prompt Drift / Unapproved Change | Prompt version delta without changelog entry | Revert to last tagged prompt set | Block merges until review | Product | Changelog includes approved diff |
+| Secret Exposure in Logs | Scan finds API key pattern | Rotate exposed key & purge logs | Disable affected feature temporarily | Security | No further matches in re-scan |
+| Latency Degradation | p95 > 500ms for 5 consecutive mins | Profile & isolate slow path | Serve cached overview responses | Backend | p95 returns < 500ms |
+| Data Corruption (Mock) | Integrity check mismatch on startup | Reload pristine fixtures | Put system in READONLY mode | Eng Lead | Hashes match fixture manifest |
+
+## 32. AI Governance & Prompt Safety
+### 32.1 Prompt Frontmatter Fields
+`id, name, version, owners, description, risk_level (Low/Med/High), last_reviewed, expected_output_format, test_cases, dependencies`
+### 32.2 Change Control
+- High risk prompt (affects recommendations or metrics) requires tri-party approval.
+- All prompt changes must include a diff summary and test case updates.
+### 32.3 Safety Checklist (Pre-Merge)
+1. Clear objective stated.
+2. No data exfiltration vectors (no instructions to reveal hidden context).
+3. No sensitive identifiers.
+4. Deterministic formatting (JSON / table as specified).
+5. Version bumped & changelog updated.
+
+## 33. Traceability Matrix (Full – see `traceability.json`)
+| FR | Endpoint | Payload Ref | Test ID Pattern | Metric Link | Owner | Status |
+|----|----------|-------------|-----------------|-------------|-------|--------|
+| FR1 | GET /overview | overview.schema.json | test_fr1_overview_* | compression_pct | Product | PLANNED |
+| FR2 | GET /org | org.schema.json | test_fr2_org_* | comprehension_score | Eng Lead | PLANNED |
+| FR3 | GET /roles | roles.schema.json | test_fr3_roles_* | confidence_coverage | Eng Lead | PLANNED |
+| FR4 | POST /qa | qa.schema.json | test_fr4_qa_* | confidence_coverage | Data Engineer | PLANNED |
+| FR5 | POST /recommendation | recommendation.schema.json | test_fr5_recommendation_* | placement_accuracy | Eng Lead | PLANNED |
+| FR6 | GET/POST /quiz | quiz.schema.json | test_fr6_quiz_* | comprehension_score | Product | PLANNED |
+| FR7 | GET /metrics | metrics.schema.json | test_fr7_metrics_* | compression_pct | Product | PLANNED |
+| FR8 | GET /gaps | gaps.schema.json | test_fr8_gaps_* | gap_detection_rate | Knowledge Curator | PLANNED |
+| FR9 | (fallback) /qa | fallback.schema.json | test_fr9_fallback_* | confidence_coverage | Engineering | PLANNED |
+
+## 34. Testing & Quality Gates
+| Gate | Tooling | Pass Criteria |
+|------|---------|--------------|
+| Lint | ruff / eslint | 0 errors, warnings allowed < 10 |
+| Unit | pytest | ≥ 90% line coverage, critical logic 100% |
+| Integration | pytest integration markers | All endpoint happy paths green |
+| Performance | locust / k6 (simulated) | p95 < 500ms mock data |
+| Security | dependency scan + secret scan | 0 high vulns, 0 leaked secrets |
+| Prompt Eval | custom script | All safety checklist items PASS |
+
+## 35. Accessibility & UX Standards
+WCAG 2.1 AA targets; keyboard-only navigation; ARIA landmarks; semantic headings; color contrast ≥ 4.5:1; table captions summarizing data; screen-reader label for quiz score.
+
+## 36. Observability & SLOs
+| SLO | Target | Measurement |
+|-----|--------|-------------|
+| Availability | 99.5% (future) | Uptime monitor (synthetic) |
+| Q&A p95 Latency | < 500ms | Aggregated timing logs |
+| Recommendation Accuracy | ≥ 90% demo | Validation dataset |
+| Confidence Coverage | ≥ 98% | Metrics calculator |
+
+Structured logging: JSON lines with fields `{ts, trace_id, user_id(mock), endpoint, latency_ms, success, confidence}`.
+
+## 37. Roadmap Versions
+| Version | Highlights |
+|---------|-----------|
+| 1.0.0 | Demo baseline (mock data, deterministic retrieval) |
+| 1.1.0 | Embeddings semantic retrieval + refined confidence model |
+| 1.2.0 | Personalization (reordering; canonical facts remain immutable) + i18n scaffolding |
+| 1.3.0 | First external integration (SSO + HRIS) |
+| 1.4.0 | Slack & Jira ingestion for engagement signals |
+| 1.5.0 | Compliance hardening (SOC2 controls draft) |
+
+## 38. Agent Execution Checklist (Summary)
+Phases (detailed in `AGENT_EXECUTION_CHECKLIST.md`):
+1. Collect Context
+2. Validate Baseline
+3. Generate Endpoint Specs
+4. Author Tests (unit/integration)
+5. Implement Endpoints
+6. Metrics Verification
+7. Security & Accessibility Review
+8. Prompt Safety Review
+9. Release Tag & Changelog Update
+
+## 39. Flags for Future Expansion
+The architectural complexity deep-dive (multi-tenancy, sharding, advanced circuit breaking) is deferred—tracked for later ADRs.
+
 

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GapsResponse",
+  "type": "object",
+  "required": ["gaps", "summary"],
+  "properties": {
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["team_id", "type", "detail"],
+        "properties": {
+          "team_id": {"type": "string"},
+          "type": {"type": "string"},
+          "detail": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_teams", "gap_count", "stale_threshold_days"],
+      "properties": {
+        "total_teams": {"type": "integer", "minimum": 0},
+        "gap_count": {"type": "integer", "minimum": 0},
+        "stale_threshold_days": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

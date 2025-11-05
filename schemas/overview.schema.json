@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OverviewResponse",
+  "type": "object",
+  "required": ["mission", "problem", "value", "team_count", "rationale"],
+  "properties": {
+    "mission": {"type": "string", "minLength": 10},
+    "problem": {"type": "string", "minLength": 10},
+    "value": {"type": "string", "minLength": 5},
+    "team_count": {"type": "integer", "minimum": 1},
+    "rationale": {"type": "string", "maxLength": 200}
+  },
+  "additionalProperties": false
+}

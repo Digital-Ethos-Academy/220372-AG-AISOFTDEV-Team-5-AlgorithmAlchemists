@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QAResponse",
+  "type": "object",
+  "required": ["question", "answer", "confidence", "source_fact_id", "explanation"],
+  "properties": {
+    "question": {"type": "string"},
+    "answer": {"type": "string"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "source_fact_id": {"type": "string"},
+    "explanation": {"type": "string"},
+    "escalation": {"type": ["string", "null"], "enum": ["Consult Mentor", null]}
+  },
+  "additionalProperties": false
+}

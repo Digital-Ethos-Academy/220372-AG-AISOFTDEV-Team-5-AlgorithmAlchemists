@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "QuizListResponse",
+  "type": "object",
+  "required": ["questions"],
+  "properties": {
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "question_text"],
+        "properties": {
+          "id": {"type": "string"},
+          "question_text": {"type": "string"}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 15,
+      "maxItems": 15
+    }
+  },
+  "additionalProperties": false
+}
