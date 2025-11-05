@@ -145,3 +145,40 @@ Your final presentation should be a concise and engaging overview of your projec
     5.  **Presentation Clarity:** Was the demo and explanation clear and professional?
 
 Good luck, and have fun building! The instructional team is here to support you.
+
+---
+## Chat Logging & Agent Context Integration
+
+Markdown chat logging is governed by `chatlog/chatlog_instructions.md` (canonical protocol) and referenced in `docs/RAG_Navigator_PRD.md`. All conversational turns are recorded with sequential IDs, ISO8601 UTC timestamps, summaries, tags, and a per-response file.
+
+### Core Files
+```
+chatlog/
+    index.md                # Descending table (newest first)
+    transcript.md           # Chronological transcript (oldest first)
+    chatlog_instructions.md # Operational spec
+    <timestamp>-id-XXX-response.md # Per-response Markdown files
+```
+
+### Current Mode: Manual Protocol
+The previous automation script (`scripts/log_chat_turn.py`) has been deprecated and removed. New entries are added manually following the instructions file:
+1. Determine next ID.
+2. Generate UTC timestamp.
+3. Prepend row in `index.md`.
+4. Create full response file.
+5. Append transcript entry.
+6. Keep hash as `HASH_PENDING` until hashing routine adopted.
+
+### Planned Enhancements
+* Optional hashing activation.
+* Tag analytics and correction audit notes.
+* Potential lightweight helper script (future) preserving manual transparency.
+
+### Commit Guidance
+Each significant turn should live on a prompt branch per branching strategy. Suggested messages:
+```
+prompt(logging): Add chatlog entry ID <n>
+prompt(logging): Correction ID <n> - <reason>
+```
+
+Refer to `chatlog/chatlog_instructions.md` for authoritative details.

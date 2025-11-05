@@ -1,0 +1,66 @@
+name: context-integrity
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '.agent-context/**'
+      - 'scripts/**'
+      - 'chatlog/**'
+      - '.github/workflows/context-integrity.yml'
+  push:
+    branches: [ master ]
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate context integrity
+        run: |
+          python scripts/validate_context_integrity.py
+      - name: Instruction hashes update (informational)
+        if: github.event_name == 'pull_request'
+        run: |
+          python scripts/generate_instruction_hashes.py || true
+      - name: Upload hash alert artifact if exists
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hash-alert
+          path: HASH_ALERT.md
+          if-no-files-found: ignore
+
+  auto-merge-docs:
+    needs: integrity
+    if: >-
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.title, 'prompt') &&
+      !cancelled() && !failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check diff scope
+        uses: actions/checkout@v4
+      - name: Determine docs-only
+        id: scope
+        run: |
+          changed=$(git diff --name-only origin/master...HEAD)
+          echo "$changed" > changed.txt
+          if grep -qE '^(backend/|frontend/|scripts/bootstrap_agent_context.py)' changed.txt; then
+            echo 'docs_only=false' >> $GITHUB_OUTPUT
+          else
+            echo 'docs_only=true' >> $GITHUB_OUTPUT
+          fi
+      - name: Attempt auto merge
+        if: steps.scope.outputs.docs_only == 'true'
+        uses: pascalgn/automerge-action@v0.15.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          mergeMethod: squash
+          title: 'Auto-merged docs/log-only prompt branch'
