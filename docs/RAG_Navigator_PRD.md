@@ -1,7 +1,10 @@
 # Project Context: RAG-Powered Documentation & Query Assistant
 Version: 1.0.0
 
-"Unified Context" Mode: Prior standalone agent instruction files have been deprecated. This PRD now embeds the minimal operational directives required. Any previous references to `docs/agent_instructions/` should be ignored going forward. If auxiliary guidance is reintroduced later it will be additive, not authoritative over this document.
+"Unified Context" Mode: All prior standalone agent instruction files have been removed to reduce duplication. The only maintained external procedural documents are:
+- `docs/branching_instructions.md` (branching & operational flow)
+- `chatlog/chatlog_instructions.md` (chat logging protocol)
+All other governance nuances are embedded here. Any historical references to `docs/agent_instructions/` are obsolete.
 
 ## 1. Title & Elevator Pitch
 **Project Name:** RAG Navigator
@@ -305,7 +308,7 @@ Use the logging protocol in `chatlog/chatlog_instructions.md` verbatim. Core rul
 4. Summary: single sentence (≤200 chars) abstract of response intent; ends with a period.
 5. Tags: 1–5 lowercase keywords auto-inferred; add `correction` when overwriting.
 6. Hash field remains `HASH_PENDING` until hashing routine adopted.
-7. Corrections: overwrite full response file + update existing index row (add `correction` tag); append transcript note.
+7. Corrections: overwrite full response file + update existing index row (add `correction` tag); append transcript note. Do not create a new ID for a correction.
 8. Atomicity: All three surfaces must update in one action; if partial failure, remediate before next turn.
 
 For full template specifics, validation regex, and edge-case handling consult `chatlog/chatlog_instructions.md`. That file is the definitive procedural reference; this section is a convenience snapshot.

@@ -9,7 +9,7 @@ This document defines the branching model for the RAG Navigator project. It inte
 - Keep workflow lightweight (avoid full GitFlow overhead) while retaining professional structure.
 - Minimize merge conflicts in shared metadata files (chatlog/index.md, transcript.md, prompts/*).
 
-Model: **Lightweight Hybrid** – a single main branch with:
+Model: **Lightweight Hybrid** – a single master branch with:
 - Long‑lived phase branches (one per major PRD phase).
 - Short‑lived feature branches derived from phase branches or main.
 - Mandatory prompt branches tying each meaningful prompt to a commit (or a no-op record if no file change).
@@ -66,7 +66,7 @@ phase/presentation
 Feature branches normally base off an active phase branch. Example:
 `git checkout -b feature/retrieval-ranking phase/retrieval`
 
-Prompt branches normally base off **current active phase branch** if that branch is ahead of main; otherwise base off main.
+Prompt branches normally base off **current active phase branch** if that branch is ahead of master; otherwise base off master.
 
 ---
 ## 4. Branch Selection Decision Tree (Simplified)
@@ -139,7 +139,7 @@ PR Body Auto Sections:
 
 ### 7.2 chatlog/index.md or transcript.md Conflicts
 1. Checkout your branch.
-2. `git fetch origin && git rebase origin/main` (or phase branch).
+2. `git fetch origin && git rebase origin/master` (or phase branch).
 3. If conflict in `chatlog/index.md`:
    - Open the latest main version.
    - Insert your new row at correct descending position (top beneath header) referencing original timestamp.
@@ -167,7 +167,7 @@ Archive File (optional future): `docs/branch_archive.md` listing retired feature
 ## 9. Tagging & Phase Completion
 When a phase is complete (e.g., architecture):
 ```
-git checkout main
+git checkout master
 git merge --ff-only phase/architecture
 git tag phase-architecture-complete
 ```
@@ -204,20 +204,24 @@ Script environment assumptions: Python 3.11+, git CLI available.
 ## 13. Decision Matrix for Base Branch
 | Scenario | Base Branch |
 |----------|-------------|
-| New phase initiated | main |
+| New phase initiated | master |
 | Feature within active phase | phase/<phase> |
 | Prompt referencing ongoing phase | phase/<phase> |
-| Urgent fix to production baseline | main |
-| Experimental spike unrelated | main |
+| Urgent fix to production baseline | master |
+| Experimental spike unrelated | master |
 
 ---
-## 14. Handling Corrections
-If a prompt correction occurs (e.g., updating a previously merged response):
-- Create new prompt branch with new ID (do **not** reuse old ID) to keep historical chain intact.
-- If correction explicitly references an old ID, add tag `correction` in commit message.
-- Update chatlog entry per correction protocol.
+## 14. Handling Corrections (Aligned with Chatlog Protocol)
+Corrections to a previously logged response REUSE the same chatlog ID for transparency and avoid fragmenting history.
 
-Rationale: This preserves immutability of earlier merged commit while reflecting the new state.
+Correction Procedure:
+1. Open a prompt branch only if repository artifacts (other than the response file / index row) must change. Pure textual correction of the response file and index row can be done directly on the existing prompt branch if still open; if already merged, create a new prompt branch `prompt/<id>-correction` based on master.
+2. Overwrite the existing per-response markdown file retaining the original ID, updating the timestamp to the correction time.
+3. Update the corresponding row in `chatlog/index.md` (timestamp, summary, tags – append `correction`, hash placeholder).
+4. Append a transcript entry noting `(Correction)` for that ID.
+5. Keep commit message tags including `correction` and reference the original ID: `[prompt:<ID>] [tags:correction,<other-tags>]`.
+
+Rationale: Reusing the ID preserves a single immutable identifier for the conversational turn while clearly marking the amended state. Branch creation is only needed if non-log artifacts also change.
 
 ---
 ## 15. Audit & Traceability Enhancements (Optional Future)
@@ -246,12 +250,12 @@ Rationale: This preserves immutability of earlier merged commit while reflecting
 - [ ] Delete branch if ephemeral.
 
 ---
-## 18. Assumptions & Defaults Chosen
+## 18. Assumptions & Defaults Chosen (Updated)
 Some answers were flexible ("if it makes sense"). Defaults applied:
 - Always create prompt branches for traceability.
 - Long-lived phase branches persist until tagged complete.
 - Fast-forward merges preferred for prompt branches; squash allowed for multi-commit feature branches.
-- Corrections use **new** prompt ID rather than editing previous commit.
+- Corrections reuse the existing prompt/chatlog ID (see Section 14) unless broader artifact changes justify a new branch with a correction suffix.
 - Branch archive file deferred until ≥5 feature branches merged.
 
 ---
