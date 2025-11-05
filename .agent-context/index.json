@@ -1,0 +1,10 @@
+{
+  "prd_path": "docs/RAG_Navigator_PRD.md",
+  "prd_version": "1.0.0",
+  "prd_hash": "HASH_PENDING",
+  "instruction_files": [],
+  "embedding_store": ".agent-context/agent_context.db",
+  "last_updated": "HASH_PENDING_TIMESTAMP",
+  "integrity_status": "pending",
+  "schema_version": 1
+}
