@@ -1,0 +1,56 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.mypy_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Virtual environments
+.env
+.venv/
+venv/
+
+# ---- Node / Frontend ----
+frontend/node_modules/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Build outputs
+/dist/
+/build/
+
+# ---- IDE / Editor ----
+.vscode/
+.idea/
+*.swp
+
+# ---- Environment & Secrets ----
+.env
+.env.*
+*.env
+
+# ---- Docker ----
+**/docker-compose.override.yml
+
+# ---- Misc ----
+.DS_Store
+Thumbs.db
+
+# ---- Generated data / mock artifacts ----
+/data/mock/*.json
+/data/tmp/
+
+# ---- Cache ----
+.cache/
+
+# ---- Bandit / security reports ----
+security-report.json
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
