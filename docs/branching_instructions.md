@@ -9,7 +9,7 @@ This document defines the branching model for the RAG Navigator project. It inte
 - Keep workflow lightweight (avoid full GitFlow overhead) while retaining professional structure.
 - Minimize merge conflicts in shared metadata files (chatlog/index.md, transcript.md, prompts/*).
 
-Model: **Lightweight Hybrid** – a single master branch with:
+Model: **Lightweight Hybrid** – a single main branch with:
 - Long‑lived phase branches (one per major PRD phase).
 - Short‑lived feature branches derived from phase branches or main.
 - Mandatory prompt branches tying each meaningful prompt to a commit (or a no-op record if no file change).
@@ -66,7 +66,7 @@ phase/presentation
 Feature branches normally base off an active phase branch. Example:
 `git checkout -b feature/retrieval-ranking phase/retrieval`
 
-Prompt branches normally base off **current active phase branch** if that branch is ahead of master; otherwise base off master.
+Prompt branches normally base off **current active phase branch** if that branch is ahead of main; otherwise base off main.
 
 ---
 ## 4. Branch Selection Decision Tree (Simplified)
@@ -139,7 +139,7 @@ PR Body Auto Sections:
 
 ### 7.2 chatlog/index.md or transcript.md Conflicts
 1. Checkout your branch.
-2. `git fetch origin && git rebase origin/master` (or phase branch).
+2. `git fetch origin && git rebase origin/main` (or phase branch).
 3. If conflict in `chatlog/index.md`:
    - Open the latest main version.
    - Insert your new row at correct descending position (top beneath header) referencing original timestamp.
@@ -167,7 +167,7 @@ Archive File (optional future): `docs/branch_archive.md` listing retired feature
 ## 9. Tagging & Phase Completion
 When a phase is complete (e.g., architecture):
 ```
-git checkout master
+git checkout main
 git merge --ff-only phase/architecture
 git tag phase-architecture-complete
 ```
@@ -204,18 +204,18 @@ Script environment assumptions: Python 3.11+, git CLI available.
 ## 13. Decision Matrix for Base Branch
 | Scenario | Base Branch |
 |----------|-------------|
-| New phase initiated | master |
+| New phase initiated | main |
 | Feature within active phase | phase/<phase> |
 | Prompt referencing ongoing phase | phase/<phase> |
-| Urgent fix to production baseline | master |
-| Experimental spike unrelated | master |
+| Urgent fix to production baseline | main |
+| Experimental spike unrelated | main |
 
 ---
 ## 14. Handling Corrections (Aligned with Chatlog Protocol)
 Corrections to a previously logged response REUSE the same chatlog ID for transparency and avoid fragmenting history.
 
 Correction Procedure:
-1. Open a prompt branch only if repository artifacts (other than the response file / index row) must change. Pure textual correction of the response file and index row can be done directly on the existing prompt branch if still open; if already merged, create a new prompt branch `prompt/<id>-correction` based on master.
+1. Open a prompt branch only if repository artifacts (other than the response file / index row and JSON mirror) must change. Pure textual correction of the response file, `index.md`, and `index.json` can be done directly on the existing prompt branch if still open; if already merged, create a new prompt branch `prompt/<id>-correction` based on main.
 2. Overwrite the existing per-response markdown file retaining the original ID, updating the timestamp to the correction time.
 3. Update the corresponding row in `chatlog/index.md` (timestamp, summary, tags – append `correction`, hash placeholder).
 4. Append a transcript entry noting `(Correction)` for that ID.

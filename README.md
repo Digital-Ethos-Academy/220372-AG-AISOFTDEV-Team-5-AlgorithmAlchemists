@@ -167,10 +167,12 @@ The previous automation script (`scripts/log_chat_turn.py`) has been deprecated 
 3. Prepend row in `index.md`.
 4. Create full response file.
 5. Append transcript entry.
-6. Keep hash as `HASH_PENDING` until hashing routine adopted.
+6. Update JSON mirror `index.json` (insert object at array start with newest-first ordering, plain filename in `link`).
+7. Keep hash as `HASH_PENDING` until hashing routine adopted.
 
 ### Planned Enhancements
 * Optional hashing activation.
+* JSON mirror validation tooling.
 * Tag analytics and correction audit notes.
 * Potential lightweight helper script (future) preserving manual transparency.
 
