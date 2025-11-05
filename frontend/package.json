@@ -1,0 +1,22 @@
+{
+  "name": "poi-compass-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "POI Compass React frontend for orientation compression demo",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false",
+    "lint": "echo 'Add ESLint config later'"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
