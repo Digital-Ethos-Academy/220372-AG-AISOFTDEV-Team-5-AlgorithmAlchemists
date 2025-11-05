@@ -19,6 +19,7 @@ This document defines the exact, repeatable protocol an LLM must follow to recor
 3. LLM (maintainer) appends a new entry to `index.md` at the top (descending order by timestamp).
 4. LLM creates/updates a full response file containing entire assistant response and required metadata.
 5. LLM appends summary to `transcript.md` (chronological order, bottom append).
+6. LLM updates JSON mirror `index.json` inserting the object for the new entry at the start of the array (newest first).
 
 ---
 ## 3. ID & Timestamp Rules
@@ -44,7 +45,7 @@ Definitions:
 - **Tags**: Comma-separated lowercase keywords (auto-infer from content). See Tag Policy (§8).
 - **Hash**: Placeholder `HASH_PENDING` unless a hashing routine is available. If hashing implemented, use SHA256 over the full assistant response text.
 
-Newest entries MUST be inserted directly below the header row so the table remains in descending order.
+Newest entries MUST be inserted directly below the header row so the table remains in descending order. The JSON mirror MUST mirror the same newest-first ordering.
 
 ---
 ## 5. Full Response File Template

@@ -302,14 +302,14 @@ README.md
 ## Operational Chat Logging Directive (Embedded)
 
 Use the logging protocol in `chatlog/chatlog_instructions.md` verbatim. Core rules (embedded for convenience; canonical source remains that file to allow focused maintenance):
-1. After each assistant reply: prepend a new row to `chatlog/index.md`, create the full response markdown file, and append an entry to `chatlog/transcript.md`.
+1. After each assistant reply: prepend a new row to `chatlog/index.md`, create the full response markdown file, update JSON mirror `chatlog/index.json` (newest first), and append an entry to `chatlog/transcript.md`.
 2. IDs: sequential integers starting at 1; never renumber; corrections reuse ID.
 3. Timestamps: ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`). Filename replaces `:` with `-`.
 4. Summary: single sentence (≤200 chars) abstract of response intent; ends with a period.
 5. Tags: 1–5 lowercase keywords auto-inferred; add `correction` when overwriting.
 6. Hash field remains `HASH_PENDING` until hashing routine adopted.
 7. Corrections: overwrite full response file + update existing index row (add `correction` tag); append transcript note. Do not create a new ID for a correction.
-8. Atomicity: All three surfaces must update in one action; if partial failure, remediate before next turn.
+8. Atomicity: All four surfaces (`index.md`, response file, `index.json`, transcript) must update in one action; if partial failure, remediate before next turn.
 
 For full template specifics, validation regex, and edge-case handling consult `chatlog/chatlog_instructions.md`. That file is the definitive procedural reference; this section is a convenience snapshot.
 
