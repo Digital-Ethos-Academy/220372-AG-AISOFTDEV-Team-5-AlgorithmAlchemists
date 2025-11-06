@@ -14,7 +14,8 @@
           "name": {"type": "string"},
           "mission": {"type": "string"},
           "responsibilities": {"type": "array", "items": {"type": "string"}},
-          "parent_team_id": {"type": ["string", "null"]}
+          "parent_team_id": {"type": ["string", "null"]},
+          "tenant_id": {"type": ["string", "null"]}
         },
         "additionalProperties": false
       },

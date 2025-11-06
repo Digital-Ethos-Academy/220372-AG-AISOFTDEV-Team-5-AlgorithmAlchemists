@@ -16,6 +16,7 @@ class TeamModel(BaseModel):
     mission: str
     responsibilities: List[str]
     parent_team_id: Optional[str] = None
+    tenant_id: Optional[str] = None
 
 class OrgResponse(BaseModel):
     teams: List[TeamModel]
@@ -52,6 +53,47 @@ class RecommendationResponse(BaseModel):
 class QuizQuestionModel(BaseModel):
     id: str
     question_text: str
+
+class TeamCreate(BaseModel):
+    id: str
+    name: str
+    mission: str
+    responsibilities: List[str] = []
+    parent_team_id: Optional[str] = None
+    tenant_id: Optional[str] = None
+
+class TeamUpdate(BaseModel):
+    name: Optional[str] = None
+    mission: Optional[str] = None
+    responsibilities: Optional[List[str]] = None
+    parent_team_id: Optional[str] = None
+
+class FactModel(BaseModel):
+    id: str
+    category: str
+    fact_text: str
+    tenant_id: Optional[str] = None
+
+class FactCreate(BaseModel):
+    id: str
+    category: str
+    fact_text: str
+    tenant_id: Optional[str] = None
+
+class FactUpdate(BaseModel):
+    category: Optional[str] = None
+    fact_text: Optional[str] = None
+
+class QuizQuestionCreate(BaseModel):
+    id: str
+    fact_id: str
+    question_text: str
+    correct_answer: str
+    tenant_id: Optional[str] = None
+
+class QuizQuestionUpdate(BaseModel):
+    question_text: Optional[str] = None
+    correct_answer: Optional[str] = None
 
 class QuizListResponse(BaseModel):
     questions: List[QuizQuestionModel]
