@@ -7,6 +7,7 @@ import QuizPage from './pages/QuizPage';
 import RecommendationPage from './pages/RecommendationPage';
 import MetricsPage from './pages/MetricsPage';
 import RuntimeMetricsPage from './pages/RuntimeMetricsPage';
+import QAPage from './pages/QAPage';
 import NavBar from './components/NavBar';
 import PageShell from './components/PageShell';
 
@@ -20,6 +21,7 @@ export default function App(){
           <Route path="/org" element={<PageShell title="Org Explorer"><OrgPage/></PageShell>} />
           <Route path="/roles" element={<PageShell title="Roles Lookup"><RolesPage/></PageShell>} />
           <Route path="/quiz" element={<PageShell title="Quiz"><QuizPage/></PageShell>} />
+          <Route path="/qa" element={<PageShell title="Q&A"><QAPage/></PageShell>} />
           <Route path="/recommendation" element={<PageShell title="Recommendation"><RecommendationPage/></PageShell>} />
           <Route path="/metrics" element={<PageShell title="Metrics"><MetricsPage/></PageShell>} />
           <Route path="/runtime" element={<PageShell title="Runtime Metrics"><RuntimeMetricsPage/></PageShell>} />

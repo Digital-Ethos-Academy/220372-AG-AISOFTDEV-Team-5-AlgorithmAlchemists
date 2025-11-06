@@ -1,0 +1,7 @@
+.qa-panel { background: var(--color-bg-alt); border:1px solid var(--color-border); padding: var(--space-4); border-radius: var(--radius-lg); display:flex; flex-direction:column; gap: var(--space-3); }
+.qa-header { display:flex; justify-content:space-between; align-items:center; }
+.confidence-badge { padding:2px 8px; border-radius: var(--radius-pill); font-size: var(--fs-xs); font-weight:600; background: var(--color-info); color:#081b33; }
+.confidence-badge.low { background: var(--color-danger); color:#fff; }
+.confidence-badge.high { background: var(--color-success); color:#fff; }
+.fallback-banner { background: var(--color-danger); color:#fff; padding:6px 10px; border-radius: var(--radius-md); font-size: var(--fs-sm); }
+.qa-q, .qa-a { margin:0; line-height:1.4; }

@@ -7,6 +7,7 @@ const links = [
   { to: '/org', label: 'Org' },
   { to: '/roles', label: 'Roles' },
   { to: '/quiz', label: 'Quiz' },
+  { to: '/qa', label: 'Q&A' },
   { to: '/recommendation', label: 'Recommendation' },
   { to: '/metrics', label: 'Metrics' },
   { to: '/runtime', label: 'Runtime' }

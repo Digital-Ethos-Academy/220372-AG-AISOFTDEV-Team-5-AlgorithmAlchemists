@@ -9,6 +9,8 @@ const stories = [
   { id: 'components-scorebar--high', name: 'scorebar-high' },
   { id: 'components-scorebar--medium', name: 'scorebar-medium' },
   { id: 'components-scorebar--low', name: 'scorebar-low' },
+  { id: 'components-qaresultpanel--high-confidence', name: 'qa-high' },
+  { id: 'components-qaresultpanel--low-confidence-fallback', name: 'qa-low-fallback' },
   { id: 'layout-pageshell--overview-example', name: 'overview-shell' }
 ];
 
