@@ -2,7 +2,7 @@
 
 ---
 doc_id: POIT-PRD
-version: 1.0.3
+version: 1.0.4
 status: Active
 owners: ["Product", "Engineering Lead", "Compliance"]
 last_reviewed: 2025-11-05
@@ -101,6 +101,8 @@ For demo: Zero tolerance applies to failing to meet both (a) ≥60% orientation 
 | FR7 | Metrics dashboard data | GET /metrics returns baseline_time, tool_time, compression_pct, comprehension_score, user_state_distribution |
 | FR8 | Gap detection | GET /gaps returns list of missing or outdated fact placeholders (mock simulation) |
 | FR9 | Confidence fallback | Low confidence (<0.85) returns escalation suggestion "Consult Mentor" |
+| FR10 | Internal runtime metrics | GET /internal/runtime-metrics returns snapshot with uptime_seconds + per-endpoint count, avg_ms, p95_ms |
+| FR11 | Audit logging | Middleware writes JSONL entries containing ts, trace_id, method, path, status, duration_ms per request |
 
 ## 9. Non-Functional Requirements
 | Category | Requirement |
@@ -265,6 +267,7 @@ Compression = (56 - 20) / 56 * 100 = 64.29% (PASS ≥60%).
 | 1.0.1 | 2025-11-05 | Product + Eng | Added quality gate scaffolding (lint, type, security, coverage), ADR 0001, backlog & issue templates, branch protection doc |
 | 1.0.2 | 2025-11-05 | Product + Eng | Added structured logging & trace IDs, optional OpenTelemetry tracing, Dockerfile, performance harness (locust), OpenAPI export script, security exception register |
 | 1.0.3 | 2025-11-05 | Product + Eng | Added security headers, standardized error envelope, feature flag system, negative tests, license scan integration |
+| 1.0.4 | 2025-11-06 | Product + Eng | Added settings validation layer, audit logging middleware, internal runtime metrics endpoint, modular recommendation engine, nightly load test schedule |
 
 ## 30. Integration Roadmap & Readiness Checklist
 ### 30.1 Priority Order (Demo -> Future)

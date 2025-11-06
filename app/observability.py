@@ -9,6 +9,7 @@ from typing import Callable
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
+from app.runtime_metrics import aggregator
 
 try:
     from opentelemetry import trace
@@ -41,6 +42,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         duration_ms = round((time.time() - start) * 1000, 2)
         response.headers["X-Trace-Id"] = trace_id
+        aggregator.record(request.url.path, duration_ms)
         logging.info({
             "trace_id": trace_id,
             "method": request.method,

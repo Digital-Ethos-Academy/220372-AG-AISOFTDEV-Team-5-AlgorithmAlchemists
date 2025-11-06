@@ -1,6 +1,5 @@
 from typing import List
 from fastapi import FastAPI, HTTPException
-import os
 
 from app.models import (
     FallbackQAResponse,
@@ -24,11 +23,16 @@ app = FastAPI(title="POI Compass API", version="1.0.0")
 
 from app.observability import init_observability  # noqa: E402
 from app.security import SecurityHeadersMiddleware  # noqa: E402
+from app.audit import AuditMiddleware  # noqa: E402
 from app.flags import is_enabled  # noqa: E402
+from app.settings import settings  # noqa: E402
+from app.runtime_metrics import aggregator  # noqa: E402
+from app.recommendation_engine import recommend_for_user  # noqa: E402
 
-if os.getenv("POI_OBSERVABILITY", "1") == "1":  # enabled by default
+if settings.poi_observability:  # enabled by default via settings
     init_observability(app)
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(AuditMiddleware)
 
 from fastapi.responses import JSONResponse  # noqa: E402
 from fastapi import Request  # noqa: E402
@@ -61,6 +65,12 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 @app.get("/health", tags=["system"])
 def health():
     return {"status": "ok", "version": "1.0.0"}
+
+@app.get("/internal/runtime-metrics", tags=["internal"])
+def runtime_metrics():
+    if not settings.internal_metrics_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+    return aggregator.snapshot()
 
 # Mock data (simplified)
 TEAMS: List[TeamModel] = [
@@ -104,32 +114,19 @@ def qa(question: str):
 
 @app.post("/recommendation", response_model=RecommendationResponse, tags=["recommendation"])
 def recommend(user_id: str):
-    if not is_enabled("REC_DISABLE"):
+    if settings.rec_disable:
         raise HTTPException(status_code=503, detail="Recommendation feature disabled")
-    # return first team with breakdown
-    selected = TEAMS[0]
-    breakdown = [
-        RecommendationBreakdown(factor="role_match", weight=50, description="General alignment"),
-        RecommendationBreakdown(factor="responsibility_overlap", weight=30, description="API focus"),
-        RecommendationBreakdown(factor="need_score", weight=20, description="Vacancy simulation")
-    ]
-    return RecommendationResponse(
-        selected_team_id=selected.id,
-        confidence=0.9,
-        rationale=f"User {user_id} aligned to {selected.name} due to API ownership",
-        explanation_breakdown=breakdown,
-        tie_break=None
-    )
+    return recommend_for_user(user_id, TEAMS)
 
 @app.get("/quiz", response_model=QuizListResponse, tags=["quiz"])
 def get_quiz():
-    if not is_enabled("QUIZ_DISABLE"):
+    if settings.quiz_disable:
         raise HTTPException(status_code=503, detail="Quiz feature disabled")
     return QuizListResponse(questions=QUIZ_QUESTIONS)
 
 @app.post("/quiz/submit", response_model=QuizSubmitResponse, tags=["quiz"])
 def submit_quiz(answers: str):
-    if not is_enabled("QUIZ_DISABLE"):
+    if settings.quiz_disable:
         raise HTTPException(status_code=503, detail="Quiz feature disabled")
     """Submit quiz answers.
 
