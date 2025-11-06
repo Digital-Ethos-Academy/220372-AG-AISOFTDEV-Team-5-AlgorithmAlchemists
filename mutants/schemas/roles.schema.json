@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RolesLookupResponse",
+  "type": "object",
+  "required": ["query", "matches"],
+  "properties": {
+    "query": {"type": "string"},
+    "matches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["team_id", "team_name", "score"],
+        "properties": {
+          "team_id": {"type": "string"},
+          "team_name": {"type": "string"},
+          "score": {"type": "number", "minimum": 0, "maximum": 1}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "additionalProperties": false
+}

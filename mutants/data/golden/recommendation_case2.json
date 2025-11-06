@@ -1,0 +1,11 @@
+{
+  "user": {"id": "U300", "role": "Data Scientist", "tenure_days": 5, "activity_state": "new"},
+  "candidates": [
+    {"team_id": "T1", "role_match": 30, "responsibility_overlap": 20, "need_score": 10, "total": 60},
+    {"team_id": "T2", "role_match": 50, "responsibility_overlap": 40, "need_score": 30, "total": 120},
+    {"team_id": "T3", "role_match": 20, "responsibility_overlap": 10, "need_score": 5, "total": 35}
+  ],
+  "expected": {
+    "selected_team_id": "T2", "confidence": 1.2, "tie_break": false
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "audit-entry.schema.json",
+  "title": "AuditLogEntry",
+  "type": "object",
+  "required": ["ts", "trace_id", "method", "path", "status", "duration_ms"],
+  "properties": {
+    "ts": { "type": "number" },
+    "trace_id": { "type": "string" },
+    "method": { "type": "string" },
+    "path": { "type": "string" },
+    "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+    "duration_ms": { "type": "number", "minimum": 0 }
+  }
+}

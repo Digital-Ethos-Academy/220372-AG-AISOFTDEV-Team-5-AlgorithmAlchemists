@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrgResponse",
+  "type": "object",
+  "required": ["teams"],
+  "properties": {
+    "teams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "mission", "responsibilities", "parent_team_id"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "mission": {"type": "string"},
+          "responsibilities": {"type": "array", "items": {"type": "string"}},
+          "parent_team_id": {"type": ["string", "null"]},
+          "tenant_id": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,151 @@
+{
+    "tests_by_mangled_function_name": {
+        "app.runtime_metrics.x\u01c1_Aggregator\u01c1record": [
+            "tests/test_fr6_quiz.py::test_fr6_quiz_submit_all_correct",
+            "tests/test_fr1_overview_success.py::test_fr1_overview_success",
+            "tests/test_recommendation_negative.py::test_recommendation_no_candidates",
+            "tests/test_admin_security_and_tenant.py::test_recommendation_debug_endpoint",
+            "tests/test_fr2_org_hierarchy.py::test_fr2_org_hierarchy",
+            "tests/test_fr3_roles_lookup.py::test_fr3_roles_lookup_fuzzy",
+            "tests/test_audit_logging.py::test_audit_log_entry_health_endpoint",
+            "tests/test_admin_security_and_tenant.py::test_admin_unauthorized",
+            "tests/test_feature_flag_recommendation_disabled.py::test_recommendation_disabled",
+            "tests/test_fr11_audit_log_write.py::test_fr11_audit_log_write_after_request",
+            "tests/test_observability_headers.py::test_trace_header_present",
+            "tests/test_fr8_gaps_simulation.py::test_fr8_gaps_simulation_contains_gap",
+            "tests/test_performance_smoke.py::test_performance_smoke",
+            "tests/test_config_health.py::test_config_health_structure",
+            "tests/test_fr4_qa_fallback_low_confidence.py::test_fr4_qa_fallback_low_confidence",
+            "tests/test_fr8_gaps_detection.py::test_fr8_gaps_detection",
+            "tests/test_fr10_internal_runtime_metrics.py::test_fr10_internal_runtime_metrics_snapshot_structure",
+            "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism",
+            "tests/test_fr9_fallback_escalation.py::test_fr9_fallback_escalation",
+            "tests/test_recommendation_negative.py::test_recommendation_invalid_user",
+            "tests/test_fr4_qa_confidence_threshold.py::test_fr4_qa_confidence_threshold",
+            "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring",
+            "tests/test_admin_security_and_tenant.py::test_tenant_isolation_create_and_list",
+            "tests/test_fr3_roles_lookup.py::test_fr3_roles_lookup_exact",
+            "tests/test_fr7_metrics_payload.py::test_fr7_metrics_payload",
+            "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag",
+            "tests/test_logging_schema_conformance.py::test_fr11b_audit_log_schema_conformance",
+            "tests/test_security_headers.py::test_security_headers_present",
+            "tests/test_schema_conformance_all.py::test_post_schemas_conform",
+            "tests/test_admin_security_and_tenant.py::test_admin_list_authorized",
+            "tests/test_schema_conformance_all.py::test_get_schemas_conform",
+            "tests/test_fr6_quiz.py::test_fr6_quiz_list"
+        ],
+        "app.settings.x__flag": [
+            "tests/test_fr6_quiz.py::test_fr6_quiz_submit_all_correct",
+            "tests/test_fr10_internal_runtime_metrics.py::test_fr10_internal_runtime_metrics_snapshot_structure",
+            "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism",
+            "tests/test_recommendation_negative.py::test_recommendation_invalid_user",
+            "tests/test_recommendation_negative.py::test_recommendation_no_candidates",
+            "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag",
+            "tests/test_schema_conformance_all.py::test_post_schemas_conform",
+            "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring",
+            "tests/test_schema_conformance_all.py::test_get_schemas_conform",
+            "tests/test_fr6_quiz.py::test_fr6_quiz_list",
+            "tests/test_admin_security_and_tenant.py::test_admin_unauthorized",
+            "tests/test_feature_flag_recommendation_disabled.py::test_recommendation_disabled",
+            "tests/test_performance_smoke.py::test_performance_smoke"
+        ],
+        "app.runtime_metrics.x\u01c1_Aggregator\u01c1__init__": [
+            "tests/test_admin_security_and_tenant.py::test_admin_unauthorized"
+        ],
+        "app.recommendation_engine.x_debug_candidates": [
+            "tests/test_admin_security_and_tenant.py::test_recommendation_debug_endpoint"
+        ],
+        "app.recommendation_engine.x__score_team": [
+            "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism",
+            "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag",
+            "tests/test_admin_security_and_tenant.py::test_recommendation_debug_endpoint",
+            "tests/test_schema_conformance_all.py::test_post_schemas_conform",
+            "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring",
+            "tests/test_performance_smoke.py::test_performance_smoke"
+        ],
+        "app.recommendation_engine.x\u01c1UserContext\u01c1__init__": [
+            "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism",
+            "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag",
+            "tests/test_admin_security_and_tenant.py::test_recommendation_debug_endpoint",
+            "tests/test_schema_conformance_all.py::test_post_schemas_conform",
+            "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring",
+            "tests/test_performance_smoke.py::test_performance_smoke"
+        ],
+        "app.confidence.x_evaluate_confidence": [
+            "tests/test_fr4_qa_fallback_low_confidence.py::test_fr4_qa_fallback_low_confidence",
+            "tests/test_confidence_fallback.py::test_confidence_ok",
+            "tests/test_confidence_fallback.py::test_confidence_escalate",
+            "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism",
+            "tests/test_recommendation_negative.py::test_recommendation_no_candidates",
+            "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag",
+            "tests/test_fr4_qa_confidence_threshold.py::test_fr4_qa_confidence_threshold",
+            "tests/test_schema_conformance_all.py::test_post_schemas_conform",
+            "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring",
+            "tests/test_performance_smoke.py::test_performance_smoke"
+        ],
+        "app.settings.x\u01c1Settings\u01c1provider_status": [
+            "tests/test_config_health.py::test_config_health_structure"
+        ],
+        "app.recommendation_engine.x_recommend_for_user": [
+            "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism",
+            "tests/test_recommendation_negative.py::test_recommendation_invalid_user",
+            "tests/test_recommendation_negative.py::test_recommendation_no_candidates",
+            "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag",
+            "tests/test_schema_conformance_all.py::test_post_schemas_conform",
+            "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring",
+            "tests/test_performance_smoke.py::test_performance_smoke"
+        ],
+        "app.runtime_metrics.x\u01c1_Aggregator\u01c1snapshot": [
+            "tests/test_fr10_internal_runtime_metrics.py::test_fr10_internal_runtime_metrics_snapshot_structure"
+        ],
+        "app.recommendation_engine.x_score_candidates": [
+            "tests/test_recommendation_tie_golden.py::test_recommendation_tie_golden",
+            "tests/test_recommendation_golden.py::test_recommendation_golden_case1"
+        ]
+    },
+    "duration_by_test": {
+        "tests/test_admin_security_and_tenant.py::test_admin_unauthorized": 0.00028071500037185615,
+        "tests/test_admin_security_and_tenant.py::test_admin_list_authorized": 0.0002079699997921125,
+        "tests/test_admin_security_and_tenant.py::test_tenant_isolation_create_and_list": 0.0002228560006187763,
+        "tests/test_admin_security_and_tenant.py::test_recommendation_debug_endpoint": 0.00032207599997491343,
+        "tests/test_audit_logging.py::test_audit_log_entry_health_endpoint": 0.0003334460006954032,
+        "tests/test_confidence_fallback.py::test_confidence_ok": 0.000267567999799212,
+        "tests/test_confidence_fallback.py::test_confidence_escalate": 0.00017624999964027666,
+        "tests/test_config_health.py::test_config_health_structure": 0.00018205200012744172,
+        "tests/test_error_envelope.py::test_error_envelope_structure_recommendation_flag": 0.00026165100007347064,
+        "tests/test_feature_flag_recommendation_disabled.py::test_recommendation_disabled": 0.00021769300019514048,
+        "tests/test_fr10_internal_runtime_metrics.py::test_fr10_internal_runtime_metrics_snapshot_structure": 0.00026369599981990177,
+        "tests/test_fr11_audit_log_write.py::test_fr11_audit_log_write_after_request": 0.0003771350002352847,
+        "tests/test_fr1_overview_success.py::test_fr1_overview_success": 0.000287108000520675,
+        "tests/test_fr2_org_hierarchy.py::test_fr2_org_hierarchy": 0.00023915099973237375,
+        "tests/test_fr3_roles_lookup.py::test_fr3_roles_lookup_exact": 0.00026883800001087366,
+        "tests/test_fr3_roles_lookup.py::test_fr3_roles_lookup_fuzzy": 0.00028444500003388384,
+        "tests/test_fr4_qa_confidence_threshold.py::test_fr4_qa_confidence_threshold": 0.00029533599990827497,
+        "tests/test_fr4_qa_fallback_low_confidence.py::test_fr4_qa_fallback_low_confidence": 0.00016604999927949393,
+        "tests/test_fr5_recommendation_scoring.py::test_fr5_recommendation_scoring": 0.0006050680003681919,
+        "tests/test_fr6_quiz.py::test_fr6_quiz_list": 0.0001736860003802576,
+        "tests/test_fr6_quiz.py::test_fr6_quiz_submit_all_correct": 0.00022005200025887461,
+        "tests/test_fr7_metrics_payload.py::test_fr7_metrics_payload": 0.00022448399977292866,
+        "tests/test_fr8_gaps_detection.py::test_fr8_gaps_detection": 0.00023250699996424373,
+        "tests/test_fr8_gaps_simulation.py::test_fr8_gaps_simulation_contains_gap": 0.00024974799998744857,
+        "tests/test_fr9_fallback_escalation.py::test_fr9_fallback_escalation": 0.0001808520000849967,
+        "tests/test_logging_schema_conformance.py::test_fr11b_audit_log_schema_conformance": 0.00016943799982982455,
+        "tests/test_metrics_snapshot_basic.py::test_metrics_snapshot_basic": 0.0001695809996817843,
+        "tests/test_observability_headers.py::test_trace_header_present": 0.00016012000014598016,
+        "tests/test_performance_smoke.py::test_performance_smoke": 0.0001819970002543414,
+        "tests/test_placeholder.py::test_placeholder": 0.00014277599984779954,
+        "tests/test_prompt_governance.py::test_prompts_version_and_return_json": 0.00013363000016397564,
+        "tests/test_qa_high_confidence_fixture.py::test_qa_high_confidence_fixture": 0.0001536330000817543,
+        "tests/test_qa_negative.py::test_qa_low_confidence": 0.00029581000035250327,
+        "tests/test_qa_negative.py::test_qa_missing_question": 0.00013394300003710669,
+        "tests/test_recommendation_golden.py::test_recommendation_golden_case1": 0.0001491940001869807,
+        "tests/test_recommendation_negative.py::test_recommendation_invalid_user": 0.0002447000006213784,
+        "tests/test_recommendation_negative.py::test_recommendation_no_candidates": 0.00031441200007975567,
+        "tests/test_recommendation_tie_golden.py::test_recommendation_tie_golden": 0.00015805500061105704,
+        "tests/test_recommendation_validation.py::test_recommendation_confidence_and_determinism": 0.00016290999974444276,
+        "tests/test_schema_conformance_all.py::test_get_schemas_conform": 0.00017265499991481192,
+        "tests/test_schema_conformance_all.py::test_post_schemas_conform": 0.00015538899970124476,
+        "tests/test_security_headers.py::test_security_headers_present": 0.00022754800011171028
+    },
+    "stats_time": 2.62707321
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MetricsResponse",
+  "type": "object",
+  "required": ["baseline_hours", "tool_hours", "compression_pct", "quiz_accuracy", "confidence_coverage"],
+  "properties": {
+    "baseline_hours": {"type": "number", "minimum": 0},
+    "tool_hours": {"type": "number", "minimum": 0},
+    "compression_pct": {"type": "number", "minimum": 0, "maximum": 100},
+    "quiz_accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+    "confidence_coverage": {"type": "number", "minimum": 0, "maximum": 1}
+  },
+  "additionalProperties": false
+}

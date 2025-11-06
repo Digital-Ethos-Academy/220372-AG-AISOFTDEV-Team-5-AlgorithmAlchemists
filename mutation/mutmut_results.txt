@@ -1,0 +1,135 @@
+    app.confidence.x_evaluate_confidence__mutmut_15: survived
+    app.confidence.x_evaluate_confidence__mutmut_16: survived
+    app.confidence.x_evaluate_confidence__mutmut_17: survived
+    app.confidence.x_evaluate_confidence__mutmut_24: survived
+    app.confidence.x_evaluate_confidence__mutmut_25: survived
+    app.confidence.x_evaluate_confidence__mutmut_26: survived
+    app.confidence.x_evaluate_confidence__mutmut_27: survived
+    app.confidence.x_evaluate_confidence__mutmut_28: survived
+    app.confidence.x_evaluate_confidence__mutmut_29: survived
+    app.confidence.x_evaluate_confidence__mutmut_43: survived
+    app.confidence.x_evaluate_confidence__mutmut_44: survived
+    app.confidence.x_evaluate_confidence__mutmut_45: survived
+    app.confidence.x_evaluate_confidence__mutmut_46: survived
+    app.confidence.x_evaluate_confidence__mutmut_47: survived
+    app.confidence.x_evaluate_confidence__mutmut_48: survived
+    app.confidence.x_evaluate_confidence__mutmut_49: survived
+    app.flags.x_is_enabled__mutmut_1: no tests
+    app.flags.x_is_enabled__mutmut_2: no tests
+    app.flags.x_is_enabled__mutmut_3: no tests
+    app.flags.x_is_enabled__mutmut_4: no tests
+    app.flags.x_is_enabled__mutmut_5: no tests
+    app.flags.x_is_enabled__mutmut_6: no tests
+    app.flags.x_is_enabled__mutmut_7: no tests
+    app.flags.x_is_enabled__mutmut_8: no tests
+    app.flags.x_is_enabled__mutmut_9: no tests
+    app.flags.x_is_enabled__mutmut_10: no tests
+    app.flags.x_is_enabled__mutmut_11: no tests
+    app.flags.x_is_enabled__mutmut_12: no tests
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_1: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_2: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_3: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_4: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_5: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_6: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_7: survived
+    app.recommendation_engine.xǁUserContextǁ__init____mutmut_10: survived
+    app.recommendation_engine.x__score_team__mutmut_6: survived
+    app.recommendation_engine.x__score_team__mutmut_7: survived
+    app.recommendation_engine.x__score_team__mutmut_9: survived
+    app.recommendation_engine.x__score_team__mutmut_10: survived
+    app.recommendation_engine.x__score_team__mutmut_11: survived
+    app.recommendation_engine.x__score_team__mutmut_13: survived
+    app.recommendation_engine.x__score_team__mutmut_14: survived
+    app.recommendation_engine.x__score_team__mutmut_16: survived
+    app.recommendation_engine.x__score_team__mutmut_17: survived
+    app.recommendation_engine.x__score_team__mutmut_18: survived
+    app.recommendation_engine.x__score_team__mutmut_19: survived
+    app.recommendation_engine.x__score_team__mutmut_20: survived
+    app.recommendation_engine.x__score_team__mutmut_22: survived
+    app.recommendation_engine.x__score_team__mutmut_23: survived
+    app.recommendation_engine.x__score_team__mutmut_24: survived
+    app.recommendation_engine.x__score_team__mutmut_25: survived
+    app.recommendation_engine.x__score_team__mutmut_30: survived
+    app.recommendation_engine.x__score_team__mutmut_33: survived
+    app.recommendation_engine.x__score_team__mutmut_34: survived
+    app.recommendation_engine.x__score_team__mutmut_45: survived
+    app.recommendation_engine.x__score_team__mutmut_46: survived
+    app.recommendation_engine.x__score_team__mutmut_47: survived
+    app.recommendation_engine.x__score_team__mutmut_48: survived
+    app.recommendation_engine.x__score_team__mutmut_49: survived
+    app.recommendation_engine.x__score_team__mutmut_56: survived
+    app.recommendation_engine.x__score_team__mutmut_57: survived
+    app.recommendation_engine.x__score_team__mutmut_58: survived
+    app.recommendation_engine.x__score_team__mutmut_59: survived
+    app.recommendation_engine.x__score_team__mutmut_60: survived
+    app.recommendation_engine.x__score_team__mutmut_67: survived
+    app.recommendation_engine.x__score_team__mutmut_68: survived
+    app.recommendation_engine.x__score_team__mutmut_69: survived
+    app.recommendation_engine.x__score_team__mutmut_70: survived
+    app.recommendation_engine.x__score_team__mutmut_71: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_15: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_16: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_17: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_18: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_19: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_24: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_28: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_32: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_41: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_43: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_44: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_49: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_51: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_57: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_59: survived
+    app.recommendation_engine.x_recommend_for_user__mutmut_68: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_2: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_3: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_11: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_12: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_15: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_16: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_18: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_19: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_20: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_21: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_26: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_27: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_28: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_34: survived
+    app.recommendation_engine.x_debug_candidates__mutmut_38: survived
+    app.recommendation_engine.x_score_candidates__mutmut_2: survived
+    app.recommendation_engine.x_score_candidates__mutmut_9: survived
+    app.recommendation_engine.x_score_candidates__mutmut_10: survived
+    app.recommendation_engine.x_score_candidates__mutmut_11: survived
+    app.recommendation_engine.x_score_candidates__mutmut_12: survived
+    app.runtime_metrics.xǁ_Aggregatorǁ__init____mutmut_1: survived
+    app.runtime_metrics.xǁ_Aggregatorǁ__init____mutmut_2: survived
+    app.runtime_metrics.xǁ_Aggregatorǁ__init____mutmut_3: survived
+    app.runtime_metrics.xǁ_Aggregatorǁ__init____mutmut_4: survived
+    app.runtime_metrics.xǁ_Aggregatorǁrecord__mutmut_6: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_2: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_3: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_4: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_6: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_7: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_9: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_10: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_11: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_12: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_14: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_15: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_16: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_17: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_25: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_31: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_40: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_41: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_42: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_43: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_47: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_48: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_49: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_50: survived
+    app.runtime_metrics.xǁ_Aggregatorǁsnapshot__mutmut_51: survived
