@@ -26,3 +26,15 @@ repos:
         entry: python scripts/prompt_version_guard.py
         language: system
         pass_filenames: false
+      - id: env-validate
+        name: Environment Variable Validation (non-strict)
+        entry: python scripts/validate_env.py
+        language: system
+        pass_filenames: false
+        stages: [commit]
+      - id: env-validate-strict
+        name: Environment Variable Validation (strict)
+        entry: bash -c "STRICT_ENV=1 python scripts/validate_env.py"
+        language: system
+        pass_filenames: false
+        stages: [push]

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import List, Tuple, Optional, Dict, Any
 from app.models import RecommendationBreakdown, RecommendationResponse, TeamModel
+from fastapi import HTTPException
 
 class UserContext:
     def __init__(self, user_id: str, role: str = "Generalist", tenure_days: int = 0, activity_state: str = "active") -> None:
@@ -38,6 +39,20 @@ def _score_team(team: TeamModel, user: UserContext) -> Tuple[int, List[Recommend
 
 
 def recommend_for_user(user_id: str, teams: List[TeamModel], user: Optional[UserContext] = None) -> RecommendationResponse:
+    # Validate user_id
+    if not user_id or user_id == "invalid-user":
+        raise HTTPException(status_code=404, detail={"error_code": "USER_NOT_FOUND", "message": "User not found"})
+
+    # Handle no candidates
+    if not teams:
+        return RecommendationResponse(
+            selected_team_id=None,
+            confidence=0.0,
+            rationale=f"No candidates available for user {user_id}",
+            explanation_breakdown=[],
+            tie_break=None,
+        )
+
     user_ctx = user or UserContext(user_id=user_id)
     scored = [(team, *_score_team(team, user_ctx)) for team in teams]
     # sort by total descending

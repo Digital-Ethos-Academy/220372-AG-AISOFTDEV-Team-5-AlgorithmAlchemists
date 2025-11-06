@@ -94,14 +94,14 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     trace_id = request.headers.get("X-Trace-Id", "unknown")
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "error_code": f"HTTP_{exc.status_code}",
-            "message": exc.detail,
-            "trace_id": trace_id,
-        },
-    )
+    # If detail already a structured dict with error_code/message, preserve it.
+    if isinstance(exc.detail, dict):
+        payload = dict(exc.detail)
+        payload.setdefault("error_code", f"HTTP_{exc.status_code}")
+        payload.setdefault("message", "")
+        payload.setdefault("trace_id", trace_id)
+        return JSONResponse(status_code=exc.status_code, content=payload)
+    return JSONResponse(status_code=exc.status_code, content={"error_code": f"HTTP_{exc.status_code}", "message": exc.detail, "trace_id": trace_id})
 
 @app.get("/health", tags=["system"])
 def health():
@@ -111,6 +111,23 @@ def health():
         "version": "1.0.0",
         "git_commit": os.getenv("GIT_COMMIT", "unknown"),
         "build_time": os.getenv("BUILD_TIME", "unknown"),
+    }
+
+@app.get("/config/health", tags=["system"], summary="Configuration & provider availability")
+def config_health():  # lightweight, no DB
+    import os
+    required = [
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "HUGGINGFACE_API_KEY",
+        "TAVILY_API_KEY",
+        "GOOGLE_API_KEY",
+    ]
+    missing = [k for k in required if not os.getenv(k)]
+    return {
+        "providers": settings.provider_status(),  # all booleans
+        "missing_required": missing,
+        "strict_env": os.getenv("STRICT_ENV") == "1",
     }
 
 @app.get("/internal/runtime-metrics", tags=["internal"])

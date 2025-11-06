@@ -1,0 +1,4 @@
+{
+  "question": "advanced analytics",
+  "expected": {"min_confidence": 0.90}
+}
