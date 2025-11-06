@@ -15,7 +15,8 @@ try:
     from opentelemetry import trace
     from opentelemetry.sdk.resources import Resource
     from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 except ImportError:  # Optional dependency
     trace = None  # type: ignore
 
@@ -28,11 +29,24 @@ def setup_logging() -> None:
 
 
 def setup_tracing() -> None:
-    if not trace or not os.getenv("POI_TRACING"):
+    """Configure OTEL tracing if enabled.
+
+    Env:
+      POIT_OTEL_ENABLE=1 to enable
+      POIT_OTEL_EXPORTER_OTLP_ENDPOINT=https://collector:4318/v1/traces (optional)
+    Fallback: if endpoint omitted, tracing disabled to avoid silent failures.
+    """
+    if not trace or os.getenv("POIT_OTEL_ENABLE") != "1":
+        return
+    endpoint = os.getenv("POIT_OTEL_EXPORTER_OTLP_ENDPOINT")
+    if not endpoint:
+        logging.warning("OTEL enabled but no POIT_OTEL_EXPORTER_OTLP_ENDPOINT set; skipping tracer init")
         return
     provider = TracerProvider(resource=Resource.create({"service.name": "poi-compass"}))
-    provider.add_span_processor(BatchSpanProcessor(ConsoleSpanExporter()))
+    exporter = OTLPSpanExporter(endpoint=endpoint, insecure=True)
+    provider.add_span_processor(BatchSpanProcessor(exporter))
     trace.set_tracer_provider(provider)
+    logging.info({"event": "otel_tracing_enabled", "endpoint": endpoint})
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):

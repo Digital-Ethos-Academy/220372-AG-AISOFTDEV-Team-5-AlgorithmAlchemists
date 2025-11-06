@@ -140,6 +140,33 @@ def _startup_seed() -> None:
             s.add(User(id="u2", role="Docs Writer", tenure_days=5, activity_state="drifting"))
             s.add(User(id="u3", role="Generalist", tenure_days=40, activity_state="idle"))
         s.commit()
+    _verify_seed_integrity()
+
+EXPECTED_SEED = {
+    "teams": 10,
+    "facts": {"F1", "F2"},
+    "quiz_questions": 15,
+}
+
+def _verify_seed_integrity():  # best-effort warning only
+    try:
+        with Session(engine) as s:  # type: ignore
+            team_count = s.exec(select(Team)).count()
+            fact_ids = {f.id for f in s.exec(select(ProjectFact)).all()}
+            quiz_count = s.exec(select(QuizQuestion)).count()
+        issues = []
+        if team_count < EXPECTED_SEED["teams"]:
+            issues.append(f"teams expected>={EXPECTED_SEED['teams']} actual={team_count}")
+        if not EXPECTED_SEED["facts"].issubset(fact_ids):
+            issues.append(f"missing facts: {EXPECTED_SEED['facts'] - fact_ids}")
+        if quiz_count < EXPECTED_SEED["quiz_questions"]:
+            issues.append(f"quiz questions expected>={EXPECTED_SEED['quiz_questions']} actual={quiz_count}")
+        if issues:
+            import logging
+            logging.warning({"event": "seed_integrity_warning", "issues": issues})
+    except Exception:  # pragma: no cover
+        import logging
+        logging.warning({"event": "seed_integrity_check_failed"})
 
 ADMIN_TOKEN_ENV = "ADMIN_API_KEY"
 
