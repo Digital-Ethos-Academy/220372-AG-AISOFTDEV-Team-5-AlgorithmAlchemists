@@ -38,3 +38,6 @@ repos:
         language: system
         pass_filenames: false
         stages: [push]
+  # Mutation Testing Configuration
+  # Run `mutmut run` to execute mutation tests
+  # Run `mutmut results` to view results
