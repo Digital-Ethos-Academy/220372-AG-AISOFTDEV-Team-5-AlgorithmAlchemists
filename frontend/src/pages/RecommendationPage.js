@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import client from '../api/client';
 import RecommendationList from '../components/RecommendationList';
 
 export default function RecommendationPage(){
   const [userId,setUserId] = useState('demo');
   const [data,setData] = useState(null);
   const [error,setError] = useState(null);
-  const run = ()=>{ axios.post(`/recommendation?user_id=${encodeURIComponent(userId)}`).then(r=>setData(r.data)).catch(e=>setError(e.message)); };
+  const run = ()=>{ client.post(`/recommendation?user_id=${encodeURIComponent(userId)}`).then(r=>setData(r.data)).catch(e=>setError(e.message)); };
   return <div aria-labelledby="rec-heading">
     <div style={{display:'flex', gap:'1rem', alignItems:'flex-end', flexWrap:'wrap'}}>
       <div style={{display:'flex', flexDirection:'column', gap:'4px'}}>

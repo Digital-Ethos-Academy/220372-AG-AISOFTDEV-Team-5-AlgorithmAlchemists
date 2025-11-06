@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import client from '../api/client';
 import QAResultPanel from '../components/QAResultPanel';
 
 export default function QAPage(){
@@ -10,10 +10,10 @@ export default function QAPage(){
     e.preventDefault();
     setError(null);
     try {
-      const qa = await axios.post('/qa', { question });
+  const qa = await client.post('/qa', { question });
       let fallback = null;
       if(qa.data.confidence !== undefined && qa.data.confidence < 0.85){
-        const fb = await axios.post('/qa/fallback', { question });
+  const fb = await client.post('/qa/fallback', { question });
         fallback = fb.data;
       }
       setState({ question, answer: qa.data.answer, confidence: qa.data.confidence, fallback });

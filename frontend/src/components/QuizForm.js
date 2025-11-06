@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './quiz-form.css';
-import axios from 'axios';
+import client from '../api/client';
 
 export function QuizForm(){
   const [questions,setQuestions] = useState([]);
@@ -9,7 +9,7 @@ export function QuizForm(){
   const [error,setError] = useState(null);
   const [loading,setLoading] = useState(false);
 
-  useEffect(()=>{ setLoading(true); axios.get('/quiz').then(r=>{ setQuestions(r.data.questions);}).catch(e=>setError(e.message)).finally(()=>setLoading(false));},[]);
+  useEffect(()=>{ setLoading(true); client.get('/quiz').then(r=>{ setQuestions(r.data.questions);}).catch(e=>setError(e.message)).finally(()=>setLoading(false));},[]);
 
   const update = (id,value)=> setAnswers(a=>({...a,[id]: value}));
   const allAnswered = questions.length>0 && questions.every(q=> (answers[q.id]||'').trim().length>0);
@@ -17,7 +17,7 @@ export function QuizForm(){
   const submit = ()=>{
     if(!allAnswered) return;
     const answerStr = Object.entries(answers).map(([id,v])=> `${id}:${v}`).join('|');
-    axios.post(`/quiz/submit?answers=${encodeURIComponent(answerStr)}`)
+  client.post(`/quiz/submit?answers=${encodeURIComponent(answerStr)}`)
       .then(r=> setSubmitted(r.data))
       .catch(e=> setError(e.message));
   };

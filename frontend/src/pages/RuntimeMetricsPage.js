@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import client from '../api/client';
 import RuntimeMetricsTable from '../components/RuntimeMetricsTable';
 
 export default function RuntimeMetricsPage(){
@@ -10,7 +10,7 @@ export default function RuntimeMetricsPage(){
   const load = ()=>{
     setUnauthorized(false); setError(null); setData(null);
     const headers = token ? { 'X-Internal-Token': token } : {};
-    axios.get('/internal/runtime-metrics', { headers })
+  client.get('/internal/runtime-metrics', { headers })
       .then(r=>setData(r.data))
       .catch(e=>{
         if(e.response && e.response.status === 401) setUnauthorized(true); else setError(e.message);

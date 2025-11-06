@@ -13,7 +13,7 @@ export function QAResultPanel({ state }) {
           <span className={`confidence-badge ${low?'low':'high'}`}>{Math.round(confidence*100)}%</span>
         )}
       </div>
-      {low && fallback && <div className="fallback-banner" role="alert">Low confidence &lt; 0.85 – {fallback.escalation_action || 'Consult Mentor'}</div>}
+  {low && fallback && <div className="fallback-banner" role="alert">Low confidence &lt; 0.85 – {fallback.escalation || 'Consult Mentor'}</div>}
       <p className="qa-q"><strong>Q:</strong> {question}</p>
       <p className="qa-a"><strong>A:</strong> {answer}</p>
     </div>

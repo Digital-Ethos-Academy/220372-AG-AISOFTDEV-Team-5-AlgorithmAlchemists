@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './roles-search-panel.css';
-import axios from 'axios';
+import client from '../api/client';
 
 export function RolesSearchPanel(){
   const [query,setQuery] = useState('');
@@ -15,7 +15,7 @@ export function RolesSearchPanel(){
     if(!query.trim()) { setResults([]); return; }
     setLoading(true); setError(null);
     try {
-      const r = await axios.get(`/roles?query=${encodeURIComponent(query)}`);
+  const r = await client.get(`/roles?query=${encodeURIComponent(query)}`);
       setResults(r.data.matches || []);
     } catch(err){
       setError(err.message);
