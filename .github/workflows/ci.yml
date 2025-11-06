@@ -37,6 +37,9 @@ jobs:
       - name: Dependency Vulnerability Scan
         run: |
           pip-audit -r requirements.txt || exit 1
+      - name: License Scan
+        run: |
+          pip-licenses --allow-only="MIT,BSD,Apache,ISC" || { echo "Disallowed license detected"; exit 1; }
 
       - name: Prompt Governance Lint
         run: |

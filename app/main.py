@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import os
 
 from app.models import (
@@ -22,10 +22,41 @@ from app.models import (
 
 app = FastAPI(title="POI Compass API", version="1.0.0")
 
-from app.observability import init_observability  # noqa E402
+from app.observability import init_observability  # noqa: E402
+from app.security import SecurityHeadersMiddleware  # noqa: E402
+from app.flags import is_enabled  # noqa: E402
 
 if os.getenv("POI_OBSERVABILITY", "1") == "1":  # enabled by default
     init_observability(app)
+app.add_middleware(SecurityHeadersMiddleware)
+
+from fastapi.responses import JSONResponse  # noqa: E402
+from fastapi import Request  # noqa: E402
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    trace_id = request.headers.get("X-Trace-Id", "unknown")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error_code": "UNEXPECTED_ERROR",
+            "message": str(exc),
+            "trace_id": trace_id,
+        },
+    )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    trace_id = request.headers.get("X-Trace-Id", "unknown")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error_code": f"HTTP_{exc.status_code}",
+            "message": exc.detail,
+            "trace_id": trace_id,
+        },
+    )
 
 @app.get("/health", tags=["system"])
 def health():
@@ -73,6 +104,8 @@ def qa(question: str):
 
 @app.post("/recommendation", response_model=RecommendationResponse, tags=["recommendation"])
 def recommend(user_id: str):
+    if not is_enabled("REC_DISABLE"):
+        raise HTTPException(status_code=503, detail="Recommendation feature disabled")
     # return first team with breakdown
     selected = TEAMS[0]
     breakdown = [
@@ -90,10 +123,14 @@ def recommend(user_id: str):
 
 @app.get("/quiz", response_model=QuizListResponse, tags=["quiz"])
 def get_quiz():
+    if not is_enabled("QUIZ_DISABLE"):
+        raise HTTPException(status_code=503, detail="Quiz feature disabled")
     return QuizListResponse(questions=QUIZ_QUESTIONS)
 
 @app.post("/quiz/submit", response_model=QuizSubmitResponse, tags=["quiz"])
 def submit_quiz(answers: str):
+    if not is_enabled("QUIZ_DISABLE"):
+        raise HTTPException(status_code=503, detail="Quiz feature disabled")
     """Submit quiz answers.
 
     Accepts a single comma-separated string of answer IDs via query param `answers`.

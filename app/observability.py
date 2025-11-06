@@ -41,15 +41,13 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         duration_ms = round((time.time() - start) * 1000, 2)
         response.headers["X-Trace-Id"] = trace_id
-        logging.info(
-            {
-                "trace_id": trace_id,
-                "method": request.method,
-                "path": request.url.path,
-                "status": response.status_code,
-                "duration_ms": duration_ms,
-            }
-        )
+        logging.info({
+            "trace_id": trace_id,
+            "method": request.method,
+            "path": request.url.path,
+            "status": response.status_code,
+            "duration_ms": duration_ms,
+        })
         return response
 
 
