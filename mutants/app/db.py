@@ -5,11 +5,11 @@ Future-proofed with `tenant_id` column support on all domain tables.
 """
 from __future__ import annotations
 
+import os
 from contextlib import contextmanager
 from typing import Iterator
 
-from sqlmodel import SQLModel, create_engine, Session
-import os
+from sqlmodel import Session, SQLModel, create_engine
 
 DATABASE_URL = os.getenv("POIT_DATABASE_URL", "sqlite:///./poit.db")
 

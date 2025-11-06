@@ -1,11 +1,6 @@
-from typing import List, Optional
+from typing import Annotated, Callable, List, Optional
 
 from pydantic import BaseModel, Field
-from inspect import signature as _mutmut_signature
-from typing import Annotated
-from typing import Callable
-from typing import ClassVar
-
 
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 

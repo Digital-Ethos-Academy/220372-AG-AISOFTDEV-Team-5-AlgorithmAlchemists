@@ -42,8 +42,9 @@ def _ensure_db() -> None:
     tables idempotently here removes ordering sensitivity.
     """
     try:
-        from app.db import init_db, engine
         from sqlmodel import Session, select
+
+        from app.db import engine, init_db
         from app.db_models import Team
         init_db()
         # Seed if empty (mirrors startup seeding)

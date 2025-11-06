@@ -1,8 +1,12 @@
-from typing import List, Optional
-from fastapi import FastAPI, HTTPException, Header, Depends, Body
+from typing import List
+
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import (
+    FactCreate,
+    FactModel,
+    FactUpdate,
     FallbackQAResponse,
     GapsResponse,
     GapsSummary,
@@ -11,36 +15,36 @@ from app.models import (
     OverviewResponse,
     QAResponse,
     QuizListResponse,
+    QuizQuestionCreate,
     QuizQuestionModel,
+    QuizQuestionUpdate,
     QuizSubmitResponse,
-    RecommendationBreakdown,
     RecommendationResponse,
     RolesLookupResponse,
     RolesMatch,
-    TeamModel,
     TeamCreate,
+    TeamModel,
     TeamUpdate,
-    FactModel,
-    FactCreate,
-    FactUpdate,
-    QuizQuestionCreate,
-    QuizQuestionUpdate,
 )
 
 app = FastAPI(title="POI Compass API", version="1.0.0")
 
-from app.observability import init_observability  # noqa: E402
-from app.security import SecurityHeadersMiddleware  # noqa: E402
-from app.audit import AuditMiddleware  # noqa: E402
-from app.flags import is_enabled  # noqa: E402
-from app.settings import settings  # noqa: E402
-from app.runtime_metrics import aggregator  # noqa: E402
-from app.recommendation_engine import recommend_for_user, debug_candidates, UserContext  # noqa: E402
-from app.confidence import evaluate_confidence  # noqa: E402
-from app.db import init_db, get_session, engine  # noqa: E402
-from app.db_models import Team, ProjectFact, QuizQuestion, User  # noqa: E402
 from sqlmodel import Session, select  # noqa: E402
+
+from app.audit import AuditMiddleware  # noqa: E402
+from app.confidence import evaluate_confidence  # noqa: E402
+from app.db import engine, get_session, init_db  # noqa: E402
+from app.db_models import ProjectFact, QuizQuestion, Team, User  # noqa: E402
+from app.observability import init_observability  # noqa: E402
+from app.recommendation_engine import (  # noqa: E402
+    UserContext,
+    debug_candidates,
+    recommend_for_user,
+)
 from app.retrieval import get_retriever  # noqa: E402
+from app.runtime_metrics import aggregator  # noqa: E402
+from app.security import SecurityHeadersMiddleware  # noqa: E402
+from app.settings import settings  # noqa: E402
 
 if settings.poi_observability:  # enabled by default via settings
     init_observability(app)
@@ -49,6 +53,7 @@ app.add_middleware(AuditMiddleware)
 
 # CORS configuration (permissive by default for demo; tighten via CORS_ORIGINS env)
 import os as _os  # local alias to avoid name collision above
+
 _origins = [o.strip() for o in _os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()] or ["*"]
 app.add_middleware(
     CORSMiddleware,
@@ -58,10 +63,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from fastapi.responses import JSONResponse  # noqa: E402
-from fastapi import Request  # noqa: E402
-from fastapi.staticfiles import StaticFiles  # noqa: E402
 import os  # noqa: E402
+
+from fastapi import Request  # noqa: E402
+from fastapi.responses import JSONResponse  # noqa: E402
+from fastapi.staticfiles import StaticFiles  # noqa: E402
+
 # Serve built frontend if present (single-container deploy)
 FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "..", "frontend_build")
 if os.path.isdir(FRONTEND_DIR):

@@ -1,6 +1,7 @@
-import os
 from fastapi.testclient import TestClient
+
 from app.main import app
+
 
 def test_recommendation_disabled(monkeypatch):
     monkeypatch.setenv("REC_DISABLE", "1")  # 1 disables recommendation (is_enabled returns False)

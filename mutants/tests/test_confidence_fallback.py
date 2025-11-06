@@ -1,4 +1,4 @@
-from app.confidence import evaluate_confidence, THRESHOLD
+from app.confidence import THRESHOLD, evaluate_confidence
 
 
 def test_confidence_ok():

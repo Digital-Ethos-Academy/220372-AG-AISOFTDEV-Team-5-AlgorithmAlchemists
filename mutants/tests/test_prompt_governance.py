@@ -1,5 +1,6 @@
 import re
 
+
 def test_prompts_version_and_return_json():
     with open("prompts.md", "r", encoding="utf-8") as f:
         content = f.read()

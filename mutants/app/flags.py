@@ -8,10 +8,7 @@ _DEFAULT_FLAGS = {
     "QUIZ_DISABLE": "0",  # set to '1' to disable quiz endpoints
 }
 from inspect import signature as _mutmut_signature
-from typing import Annotated
-from typing import Callable
-from typing import ClassVar
-
+from typing import Annotated, Callable, ClassVar
 
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 

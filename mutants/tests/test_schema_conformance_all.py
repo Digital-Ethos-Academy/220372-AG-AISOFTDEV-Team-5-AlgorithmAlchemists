@@ -1,8 +1,10 @@
 import json
 import pathlib
+
 from fastapi.testclient import TestClient
-from app.main import app
 from jsonschema import validate
+
+from app.main import app
 
 client = TestClient(app)
 

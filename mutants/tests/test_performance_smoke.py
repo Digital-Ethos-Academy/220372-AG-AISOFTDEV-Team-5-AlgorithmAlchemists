@@ -1,5 +1,6 @@
 import time
 from statistics import mean
+
 from fastapi.testclient import TestClient
 
 from app.main import app

@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from app.recommendation_engine import score_candidates
 
 GOLDEN = Path("data/golden/recommendation_tie.json")

@@ -6,9 +6,10 @@ rewriting the /qa endpoint.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Protocol, Tuple
-import re
+
 from sqlmodel import Session, select
 
 from app.db_models import ProjectFact

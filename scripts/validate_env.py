@@ -23,6 +23,12 @@ import os
 import sys
 from typing import List, Dict, Any
 
+try:  # optional, keep failure silent (simple & intuitive)
+    from dotenv import load_dotenv  # type: ignore
+    _DOTENV_AVAILABLE = True
+except Exception:  # pragma: no cover - import guard
+    _DOTENV_AVAILABLE = False
+
 
 REQUIRED_KEYS = [
     "OPENAI_API_KEY",
@@ -44,18 +50,26 @@ def _is_strict() -> bool:
 
 
 def validate() -> Dict[str, Any]:
+    # Auto-load .env for local (non-strict) mode; silent if unavailable.
+    if not _is_strict() and _DOTENV_AVAILABLE:
+        load_dotenv(override=False)
+
     strict = _is_strict()
     missing: List[str] = []
     placeholder: List[str] = []
 
     for key in REQUIRED_KEYS:
-        val = os.getenv(key)
+        val = os.getenv(key, "")
         if not val:
-            # Always missing in both strict and non-strict (hard requirement)
             missing.append(key)
+        else:
+            # In permissive (non-strict) mode treat placeholder tokens as present (not missing)
+            if strict and val in PLACEHOLDER_VALUES:
+                placeholder.append(key)
+
     for key in OPTIONAL_KEYS:
         val = os.getenv(key, "")
-        if strict and (val in PLACEHOLDER_VALUES):
+        if strict and val in PLACEHOLDER_VALUES:
             placeholder.append(key)
 
     status = "pass"
@@ -68,6 +82,7 @@ def validate() -> Dict[str, Any]:
         "missing_keys": missing,
         "placeholder_keys": placeholder,
         "required_count": len(REQUIRED_KEYS),
+        "dotenv_loaded": (not strict and _DOTENV_AVAILABLE),
     }
 
 

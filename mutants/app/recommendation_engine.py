@@ -1,14 +1,12 @@
 """Recommendation engine module (rule-based placeholder)."""
 from __future__ import annotations
 
-from typing import List, Tuple, Optional, Dict, Any
-from app.models import RecommendationBreakdown, RecommendationResponse, TeamModel
-from fastapi import HTTPException
 from inspect import signature as _mutmut_signature
-from typing import Annotated
-from typing import Callable
-from typing import ClassVar
+from typing import Annotated, Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
+from fastapi import HTTPException
+
+from app.models import RecommendationBreakdown, RecommendationResponse, TeamModel
 
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 

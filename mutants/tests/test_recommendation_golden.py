@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
 
-from app.recommendation_engine import score_candidates  # assuming function exists; adjust if name differs
+from app.recommendation_engine import (
+    score_candidates,  # assuming function exists; adjust if name differs
+)
 
 GOLDEN_PATH = Path("data/golden/recommendation_case1.json")
 

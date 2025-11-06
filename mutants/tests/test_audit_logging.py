@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
-from fastapi.testclient import TestClient
-from app.main import app
 
+from fastapi.testclient import TestClient
+
+from app.main import app
 
 AUDIT_FILE = Path("logs/audit.jsonl")
 client = TestClient(app)

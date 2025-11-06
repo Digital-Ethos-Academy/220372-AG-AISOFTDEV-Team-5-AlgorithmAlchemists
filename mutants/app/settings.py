@@ -3,10 +3,7 @@ from __future__ import annotations
 
 import os
 from inspect import signature as _mutmut_signature
-from typing import Annotated
-from typing import Callable
-from typing import ClassVar
-
+from typing import Annotated, Callable, ClassVar
 
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 

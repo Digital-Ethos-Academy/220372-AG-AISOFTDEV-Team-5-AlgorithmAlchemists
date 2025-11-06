@@ -9,10 +9,7 @@ from typing import Any, Dict
 
 THRESHOLD = 0.85
 from inspect import signature as _mutmut_signature
-from typing import Annotated
-from typing import Callable
-from typing import ClassVar
-
+from typing import Annotated, Callable, ClassVar
 
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 

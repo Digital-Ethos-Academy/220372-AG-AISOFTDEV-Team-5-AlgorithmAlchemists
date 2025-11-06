@@ -3,12 +3,8 @@ from __future__ import annotations
 
 import threading
 import time
-from typing import Dict
 from inspect import signature as _mutmut_signature
-from typing import Annotated
-from typing import Callable
-from typing import ClassVar
-
+from typing import Annotated, Callable, ClassVar, Dict
 
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 

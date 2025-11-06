@@ -20,6 +20,18 @@ from typing import Set
 
 DEFAULT_ALLOW = {"MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC"}
 
+# Maps verbose / variant license strings to canonical tokens expected in allowlist.
+# Keep mapping intentionally small & explicit (simple, best-practice clarity).
+LICENSE_NORMALIZATION_MAP: dict[str, str] = {
+    "MIT License": "MIT",
+    "Apache Software License": "Apache-2.0",
+    "Apache License 2.0": "Apache-2.0",
+    "BSD License": "BSD-3-Clause",  # conservative default
+    "BSD 3-Clause": "BSD-3-Clause",
+    "BSD 2-Clause": "BSD-2-Clause",
+    "ISC License": "ISC",
+}
+
 
 def fetch_licenses() -> list[dict]:
     try:
@@ -42,13 +54,38 @@ def fetch_licenses() -> list[dict]:
         sys.exit(3)
 
 
+def _normalize_token(token: str) -> str:
+    """Normalize a single license token to canonical form.
+
+    - Strips common suffix 'License'
+    - Collapses AND/OR composite by returning each part separately upstream
+    - Applies explicit synonym mapping
+    """
+    t = token.strip()
+    # Remove trailing generic word 'License' if present.
+    if t.endswith(" License"):
+        t = t[:-8]
+    # Apply direct map if present.
+    return LICENSE_NORMALIZATION_MAP.get(token.strip(), t)
+
+
 def parse_package_licenses(raw: list[dict]) -> dict[str, Set[str]]:
     out: dict[str, Set[str]] = {}
     for pkg in raw:
         name = pkg.get("Name") or pkg.get("name")
         lic = pkg.get("License") or pkg.get("license") or "UNKNOWN"
-        tokens = [t.strip() for chunk in lic.split(";") for t in chunk.split(",")]
-        out[name] = {t for t in tokens if t}
+        # First split on ';' and ',' (original behavior)
+        preliminary = [t.strip() for chunk in lic.split(";") for t in chunk.split(",")]
+        tokens: Set[str] = set()
+        for token in preliminary:
+            # Further split composite expressions on AND/OR
+            parts = [p.strip() for p in token.replace("AND", "/").replace("OR", "/").split("/")]
+            for part in parts:
+                if not part:
+                    continue
+                norm = _normalize_token(part)
+                tokens.add(norm)
+        out[name] = tokens if tokens else {"UNKNOWN"}
     return out
 
 
@@ -63,9 +100,10 @@ def main() -> int:
 
     violations = {}
     for pkg, licenses in mapping.items():
+        # Filter; unknown or not in allowlist triggers violation
         bad = [l for l in licenses if l not in allowlist]
-        if bad or not licenses:
-            violations[pkg] = bad or ["UNKNOWN"]
+        if bad:
+            violations[pkg] = bad
 
     if violations:
         print("LICENSE ALLOWLIST VIOLATIONS:")
