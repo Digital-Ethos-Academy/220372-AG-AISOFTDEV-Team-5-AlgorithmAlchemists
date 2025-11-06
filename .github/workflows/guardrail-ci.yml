@@ -1,0 +1,40 @@
+name: Guardrail CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  guardrails:
+    name: Run Guardrail Scripts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run secret scan
+        run: python scripts/secret_scan.py
+
+      - name: Run license allowlist
+        run: python scripts/license_allowlist.py
+
+      - name: Run coverage guard
+        run: python scripts/coverage_guard.py
+
+      - name: Run prompt version guard
+        run: python scripts/prompt_version_guard.py
