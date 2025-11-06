@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Monochrome Logo adjusted: widened viewBox to eliminate text clipping; added meet aspect ratio -->
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="140" viewBox="0 0 480 140" preserveAspectRatio="xMinYMid meet" role="img" aria-labelledby="monoTitle monoDesc">
+  <title id="monoTitle">POI Compass Monochrome Logo</title>
+  <desc id="monoDesc">Single-color accessible monochrome variant for fax / grayscale print.</desc>
+  <g fill="#202A33" stroke="#202A33" stroke-width="2" aria-label="Monochrome emblem and logotype" transform="translate(0 20)">
+    <circle cx="50" cy="50" r="40" fill="none" stroke-width="2" stroke-dasharray="5 4" />
+    <path d="M50 18 L72 30 L72 58 Q50 78 28 58 L28 30 Z" fill="#202A33" stroke="#202A33" stroke-width="2" />
+    <polygon points="50,10 48,22 50,20 52,22" fill="#202A33" stroke-width="1" />
+    <polygon points="50,90 48,78 50,80 52,78" fill="#202A33" stroke-width="1" />
+    <polygon points="12,50 24,52 22,50 24,48" fill="#202A33" stroke-width="1" />
+    <polygon points="88,50 76,52 78,50 76,48" fill="#202A33" stroke-width="1" />
+    <text x="36" y="56" font-family="'Segoe UI','Inter',Arial" font-size="20" font-weight="700" fill="#FFFFFF">POI</text>
+    <text x="170" y="46" font-family="'Segoe UI','Inter',Arial" font-size="42" font-weight="700" fill="#202A33" letter-spacing="1">POI Compass</text>
+  </g>
+</svg>

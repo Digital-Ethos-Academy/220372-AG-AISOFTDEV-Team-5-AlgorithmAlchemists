@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="favTitle favDesc">
+  <title id="favTitle">POI Compass Favicon</title>
+  <desc id="favDesc">Simplified compass shield with letter P for small icon usage.</desc>
+  <defs>
+    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A3D62" />
+      <stop offset="100%" stop-color="#114F85" />
+    </linearGradient>
+  </defs>
+  <path d="M32 10 L48 20 L48 40 Q32 54 16 40 L16 20 Z" fill="url(#favGrad)" stroke="#FFB400" stroke-width="3" />
+  <text x="27" y="37" font-family="'Segoe UI','Inter',Arial" font-size="18" font-weight="700" fill="#FFFFFF">P</text>
+</svg>
