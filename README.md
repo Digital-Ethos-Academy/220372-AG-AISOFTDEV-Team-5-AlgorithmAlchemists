@@ -201,6 +201,42 @@ See `docs/UI_MOCKUPS.md` for wireframes & persona overlays.
 - Scaling model (500 concurrent) not stress-validated beyond synthetic smoke.
 - Frontend lacks dedicated Q&A interactive panel (coming).
 - Accessibility automation minimal (need jest-axe or pa11y pipeline).
+- Visual regression baseline pending initial snapshot commit.
+
+## 14a. Visual Regression & UI Snapshots
+We use Playwright for page-level visual regression. Five canonical routes are covered with mocked network responses for deterministic rendering:
+
+| Route | Snapshot Name | Purpose |
+|-------|----------------|---------|
+| `/` | `overview.png` | Core mission/problem quickly scannable |
+| `/metrics` | `metrics.png` | Orientation compression KPI & coverage |
+| `/quiz` | `quiz.png` | Quiz form layout stability |
+| `/recommendation` | `recommendation-idle.png` | Idle state (pre-fetch) scaffold |
+| `/roles` | `roles-idle.png` | Search panel baseline |
+
+### Updating Snapshots
+```bash
+cd frontend
+npx playwright install --with-deps   # first time only
+npx playwright test --update-snapshots
+git add tests/**-snapshots/*.png
+git commit -m "test(visual): update baseline snapshots for <reason>"
+```
+Rules:
+1. Intentional UI changes must mention snapshot update in PR description.
+2. Non-UI PRs should not modify PNGs (CI will flag unexpected diffs).
+3. Keep snapshots minimal—avoid adding transient states unless protecting a bug fix.
+
+### Live (Unmocked) Coverage (Planned)
+An optional second spec will hit real backend data to detect shape-driven layout shifts (tagged `@live`). This is deferred until dynamic data variability increases.
+
+### Accessibility & Visual Combined
+Visual tests run after jest-axe baseline in CI. Failures upload a Playwright HTML report artifact (`frontend/playwright-report`).
+
+### Flake Mitigation
+Font/rendering drift is minimized with allowed `maxDiffPixels` threshold (see `playwright.config.js`). Further instability: pin system fonts or use Docker image with consistent headless Chrome.
+
+---
 
 ## 15. Data Privacy & Compliance (Forward-Looking)
 Demo excludes PHI and personal identifiers. Future phases will incorporate HIPAA review, RBAC, audit logging, and encryption at rest for sensitive metadata.

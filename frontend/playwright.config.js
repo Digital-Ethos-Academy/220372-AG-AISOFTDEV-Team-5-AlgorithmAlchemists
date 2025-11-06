@@ -17,8 +17,8 @@ module.exports = defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      name: 'chrome-stable',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' }
     }
   ],
   webServer: {
