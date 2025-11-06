@@ -1,0 +1,23 @@
+# Ignore VCS and caches
+.git/
+.mypy_cache/
+__pycache__/
+*.pyc
+
+# Logs and artifacts
+logs/
+mutants/
+mutation/mutmut_results.txt
+
+# Env files
+.env
+*.env
+
+# Node/build artifacts (if frontend present)
+node_modules/
+dist/
+build/
+
+# IDE/editor
+.vscode/
+.idea/
