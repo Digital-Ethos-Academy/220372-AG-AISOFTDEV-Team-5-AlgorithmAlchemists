@@ -43,12 +43,24 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         duration_ms = round((time.time() - start) * 1000, 2)
         response.headers["X-Trace-Id"] = trace_id
         aggregator.record(request.url.path, duration_ms)
+        # Attempt to surface confidence from response model if present
+        confidence = None
+        try:
+            if hasattr(response, 'body') and response.body:
+                import json as _json
+                parsed = _json.loads(response.body.decode())
+                confidence = parsed.get('confidence')
+        except Exception:  # pragma: no cover
+            confidence = None
         logging.info({
             "trace_id": trace_id,
             "method": request.method,
-            "path": request.url.path,
+            "endpoint": request.url.path,
             "status": response.status_code,
+            "success": response.status_code < 400,
             "duration_ms": duration_ms,
+            "confidence": confidence,
+            "user_id": None,  # placeholder until user concept added
         })
         return response
 

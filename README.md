@@ -18,17 +18,20 @@ Large programs suffer onboarding drag and context decay. New contributors become
 Demo Example: `(56 - 20) / 56 * 100 = 64.29%` → PASS (≥60%).  
 Supporting Metrics: Comprehension Score (quiz accuracy), Confidence Coverage (answers ≥0.85), Recommendation Accuracy.
 
-## 4. Core Features
-| Feature | Endpoint | Description |
-|---------|----------|-------------|
-| Project Overview | `GET /overview` | Mission, problem, strategic summary |
-| Org Explorer | `GET /org` | Hierarchical team + responsibilities |
-| Role Lookup | `GET /roles?query=` | Fuzzy responsibility search |
-| Q&A | `POST /qa` | Deterministic fact retrieval + confidence |
-| Recommendation Engine | `POST /recommendation` | Team placement + rationale |
-| Canonical Quiz | `GET /quiz`, `POST /quiz/submit` | 15 questions, must be 100% accurate |
-| Metrics Dashboard | `GET /metrics` | Compression %, quiz accuracy, coverage |
-| Gap Detection | `GET /gaps` | Missing / stale fact simulation |
+## 4. Core Features (Implemented v1.0.4 + UI Scaffold)
+| Feature | Endpoint | Description | UI Page |
+|---------|----------|-------------|---------|
+| Project Overview | `GET /overview` | Mission, problem, strategic summary | Overview |
+| Org Explorer | `GET /org` | Hierarchical team + responsibilities | Org |
+| Role Lookup | `GET /roles?query=` | Fuzzy responsibility search | Roles (search bar) |
+| Q&A | `POST /qa` | Deterministic fact retrieval + confidence + fallback if <0.85 | (Planned UI Panel) |
+| Recommendation Engine | `POST /recommendation` | Team placement + rationale scoring (role, overlap, need) | Recommendation |
+| Canonical Quiz | `GET /quiz`, `POST /quiz/submit` | 15 questions, must be 100% accurate | Quiz |
+| Metrics Dashboard | `GET /metrics` | Compression %, quiz accuracy, coverage | Metrics |
+| Runtime Metrics (FR10) | `GET /internal/runtime-metrics` | p95 latency, counts, uptime (header‑protected) | Runtime Metrics |
+| Audit Log (FR11) | JSONL file per request | Traceability of actions | (Download link future) |
+| Gap Detection | `GET /gaps` | Simulated missing / stale fact(s) | Gaps (embedded on Overview) |
+| Fallback Escalation | `POST /qa/fallback` | Escalation when confidence insufficient | (Auto-trigger planned) |
 
 ## 5. Demo Success Criteria (Zero Tolerance)
 1. Compression ≥ 60%.  
@@ -65,51 +68,70 @@ Example Team object:
 }
 ```
 
-## 8. Installation & Setup
-Prerequisites: Python 3.11+, Node.js (latest LTS), Docker (optional).
+docker compose up --build
+## 8. Installation & Setup (Current Demo Stack)
+Prerequisites: Python 3.11+, Node.js 18+, npm 9+, (Optional) Docker. Windows users: commands shown in bash—use Git Bash or adapt to PowerShell.
 
-### Backend
+### Backend (FastAPI)
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt  # (to be created)
+source .venv/bin/activate  # Windows Git Bash; or .venv/Scripts/activate
+pip install -e .  # installs local package if setup present, else: pip install -r requirements.txt
+pytest -q         # all tests (should pass)
 uvicorn app.main:app --reload
 ```
 
-### Frontend
+### Frontend (React)
 ```bash
-cd frontend  # (folder to be scaffolded)
+cd frontend
 npm install
 npm start
 ```
+Dev server proxy forwards API calls to `http://localhost:8000`.
 
-### Docker (Optional)
+### Concurrent Run (one‑liner suggestion)
+Run backend in one terminal, frontend in another. Navigate to http://localhost:3000.
+
+### Protected Runtime Metrics Endpoint
+Add header when calling `/internal/runtime-metrics`:
+```
+X-Internal-Token: <INTERNAL_ACCESS_TOKEN>
+```
+If `INTERNAL_ACCESS_TOKEN` env var is unset, endpoint still works (demo mode). Set it for stricter demos.
+
+### Environment Variables (.env)
+```
+# Feature flags (set to 1 to DISABLE)
+REC_DISABLE=0
+QUIZ_DISABLE=0
+
+# Optional internal token
+INTERNAL_ACCESS_TOKEN=changeme
+
+# Reserved for future external AI providers
+LLM_API_KEY=
+EMBEDDING_API_KEY=
+```
+
+### Lint & Quality
 ```bash
-docker compose up --build
+ruff check .           # if ruff configured (Python)
+mypy .                 # type checking
+pytest -q              # backend tests
+cd frontend && npm run lint && npm test -- --watchAll=false
 ```
 
-### .env Example
-Create `.env`:
-```
-LLM_API_KEY=placeholder
-EMBEDDING_API_KEY=placeholder
-ENV=demo
-```
-(Not consumed in demo logic; reserved for future enhancements.)
+### Docker (Optional Future)
+`docker compose` definition pending; current Dockerfile (backend) can be built manually.
 
-## 9. Testing (Planned)
-Planned initial test suite:
-| Test | Purpose |
-|------|---------|
-| `test_metrics_compression.py` | Validates compression calculation |
-| `test_quiz_accuracy.py` | Ensures 100% canonical answer mapping |
-| `test_recommendation_scoring.py` | Score normalization + confidence threshold |
-| `test_retrieval_confidence.py` | Q&A heuristic meets ≥0.85 for canonical questions |
+## 9. Testing (Implemented Set)
+Current suite (non‑exhaustive) covers: quiz scoring, recommendation scoring & ordering, fallback escalation (<0.85), runtime metrics snapshot, audit log write, gap detection simulation, feature flag disable behavior, schema conformance.
 
-Run (after creation):
+Run everything:
 ```bash
 pytest -q
 ```
+Add new endpoint? Provide: unit test, (if applicable) integration test stub, and schema update.
 
 ## 10. AI Usage & Guardrails
 Allowed: summary phrasing, rationale templates, quiz question refinement, alternative wording.  
@@ -133,16 +155,29 @@ Phase 3: Adaptive learning paths + personalized gap analysis.
 Phase 4: Embeddings / semantic retrieval + calibrated confidence.  
 Phase 5: Integration with time-to-first-productive-commit KPI.
 
-## 13. Demo Scenario Narrative
+## 13. Demo Scenario Narrative & UI Flow
 "New hire joins a sprawling program. Previously took a week of scattered chats and doc spelunking. With POI Compass: overview (2 min), org exploration (3 min), quiz (100% in 4 min), team recommendation with rationale—orientation compressed to under half-day equivalent."  
 Visual: Metrics dashboard bar (Baseline 56h vs Tool 20h) + quiz completion badge.
 
-## 14. Known Limitations
+### Live Click Path (Prototype)
+1. Overview → skim mission/problem; note gaps badge.
+2. Org → expand teams; inspect responsibilities.
+3. Roles → search keyword (e.g., "auth") to validate discoverability.
+4. Quiz → answer deterministic questions (all visible in code for demo) → submit.
+5. Recommendation → view top 3 teams with score breakdown (role_match / overlap / need).
+6. Metrics → confirm compression %, coverage, quiz accuracy.
+7. Runtime Metrics → (optional) show p95 latencies; refresh after traffic.
+
+See `docs/UI_MOCKUPS.md` for wireframes & persona overlays.
+
+## 14. Known Limitations / Open Items
 - Baseline time simulated; real-world recalibration needed.
 - Heuristic retrieval may mis-rank semantically similar phrasing.
-- Rule-based recommendations lack dynamic skill inference.
-- No real access control / RBAC yet.
-- Scaling model (500 concurrent) not load-tested.
+- Rule-based recommendations lack dynamic skill inference (skills inventory pending).
+- No real authentication / RBAC; internal token is coarse.
+- Scaling model (500 concurrent) not stress-validated beyond synthetic smoke.
+- Frontend lacks dedicated Q&A interactive panel (coming).
+- Accessibility automation minimal (need jest-axe or pa11y pipeline).
 
 ## 15. Data Privacy & Compliance (Forward-Looking)
 Demo excludes PHI and personal identifiers. Future phases will incorporate HIPAA review, RBAC, audit logging, and encryption at rest for sensitive metadata.
@@ -173,6 +208,8 @@ Internal Use Only – Not for external distribution.
 | Version | Date | Change |
 |---------|------|--------|
 | 0.1 | 2025-11-05 | Initial project README creation |
+| 1.0.4 | 2025-11-06 | Backend FR1–FR11 complete (runtime metrics, audit) |
+| 1.0.5 | 2025-11-06 | React UI scaffold, lint config, updated docs |
 
 ---
 For deeper context: consult `prd.md`. For prompt updates: amend `prompts.md` and increment version header.

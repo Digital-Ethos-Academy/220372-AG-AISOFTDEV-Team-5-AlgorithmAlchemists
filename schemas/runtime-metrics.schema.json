@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "runtime-metrics.schema.json",
+  "title": "RuntimeMetricsSnapshot",
+  "type": "object",
+  "required": ["uptime_seconds", "endpoints"],
+  "properties": {
+    "uptime_seconds": { "type": "number", "minimum": 0 },
+    "endpoints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["count", "avg_ms", "p95_ms"],
+        "properties": {
+          "count": { "type": "integer", "minimum": 0 },
+          "avg_ms": { "type": "number", "minimum": 0 },
+          "p95_ms": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

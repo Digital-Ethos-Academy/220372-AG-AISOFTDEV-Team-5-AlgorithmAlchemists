@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 
 from app.models import (
     FallbackQAResponse,
@@ -67,9 +67,13 @@ def health():
     return {"status": "ok", "version": "1.0.0"}
 
 @app.get("/internal/runtime-metrics", tags=["internal"])
-def runtime_metrics():
+def runtime_metrics(x_internal_token: str | None = Header(default=None)):
     if not settings.internal_metrics_enabled:
         raise HTTPException(status_code=404, detail="Not found")
+    import os  # local import to avoid top-level dependency ordering
+    expected = os.getenv("INTERNAL_ACCESS_TOKEN")
+    if expected and x_internal_token != expected:
+        raise HTTPException(status_code=401, detail="Unauthorized")
     return aggregator.snapshot()
 
 # Mock data (simplified)
@@ -106,11 +110,25 @@ def role_lookup(query: str):
 
 @app.post("/qa", response_model=QAResponse, tags=["qa"])
 def qa(question: str):
-    # naive mapping: if 'api' in question -> fact F2 else F1
-    source_id = "F2" if "api" in question.lower() else "F1"
+    import re
+    tokens = set(re.sub(r'[^a-z0-9 ]', '', question.lower()).split())
+    if "api" in tokens:
+        source_id = "F2"
+        confidence = 0.92
+        escalation = None
+        explanation = "keyword match: api"
+    elif "orientation" in tokens or "time" in tokens:
+        source_id = "F1"
+        confidence = 0.9
+        escalation = None
+        explanation = "keyword match: orientation/time"
+    else:
+        source_id = "F1"
+        confidence = 0.6
+        escalation = "Consult Mentor"
+        explanation = "low token overlap"
     answer = FACTS[source_id]
-    confidence = 0.9
-    return QAResponse(question=question, answer=answer, confidence=confidence, source_fact_id=source_id, explanation="keyword match", escalation=None)
+    return QAResponse(question=question, answer=answer, confidence=confidence, source_fact_id=source_id, explanation=explanation, escalation=escalation)
 
 @app.post("/recommendation", response_model=RecommendationResponse, tags=["recommendation"])
 def recommend(user_id: str):
@@ -148,9 +166,11 @@ def get_metrics():
 
 @app.get("/gaps", response_model=GapsResponse, tags=["gaps"])
 def get_gaps():
-    # simplistic: no gaps demo
-    summary = GapsSummary(total_teams=len(TEAMS), gap_count=0, stale_threshold_days=180)
-    return GapsResponse(gaps=[], summary=summary)
+    gap_items = [
+        {"team_id": "T5", "type": "missing_mission", "detail": "Mission statement not defined"}
+    ]
+    summary = GapsSummary(total_teams=len(TEAMS), gap_count=len(gap_items), stale_threshold_days=180)
+    return GapsResponse(gaps=gap_items, summary=summary)
 
 @app.get("/qa/fallback", response_model=FallbackQAResponse, tags=["qa"])
 def qa_fallback(question: str):

@@ -15,4 +15,5 @@ def test_fr8_gaps_detection():
     assert resp.status_code == 200
     data = resp.json()
     validate(instance=data, schema=SCHEMA)
-    assert data["summary"]["gap_count"] == 0
+    # Updated logic now simulates one gap item
+    assert data["summary"]["gap_count"] == 1
