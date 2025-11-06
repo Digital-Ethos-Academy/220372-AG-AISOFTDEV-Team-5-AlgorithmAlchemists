@@ -10,6 +10,8 @@ import RuntimeMetricsPage from './pages/RuntimeMetricsPage';
 import QAPage from './pages/QAPage';
 import NavBar from './components/NavBar';
 import PageShell from './components/PageShell';
+import Footer from './components/Footer';
+import AdminPage from './pages/AdminPage';
 
 export default function App(){
   return (
@@ -25,8 +27,10 @@ export default function App(){
           <Route path="/recommendation" element={<PageShell title="Recommendation"><RecommendationPage/></PageShell>} />
           <Route path="/metrics" element={<PageShell title="Metrics"><MetricsPage/></PageShell>} />
           <Route path="/runtime" element={<PageShell title="Runtime Metrics"><RuntimeMetricsPage/></PageShell>} />
+          <Route path="/admin" element={<PageShell title="Admin"><AdminPage/></PageShell>} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }
