@@ -63,3 +63,18 @@ jobs:
         with:
           name: sbom
           path: sbom.json
+      - name: Export OpenAPI
+        run: |
+          python scripts/export_openapi.py
+      - name: Upload OpenAPI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi
+          path: openapi.json
+      - name: Build Docker Image
+        run: |
+          docker build -t poi-compass:ci .
+      - name: Gitleaks Secret Scan
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --source . --no-git -v

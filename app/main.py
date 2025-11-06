@@ -1,6 +1,6 @@
 from typing import List
-
 from fastapi import FastAPI
+import os
 
 from app.models import (
     FallbackQAResponse,
@@ -21,6 +21,11 @@ from app.models import (
 )
 
 app = FastAPI(title="POI Compass API", version="1.0.0")
+
+from app.observability import init_observability  # noqa E402
+
+if os.getenv("POI_OBSERVABILITY", "1") == "1":  # enabled by default
+    init_observability(app)
 
 @app.get("/health", tags=["system"])
 def health():

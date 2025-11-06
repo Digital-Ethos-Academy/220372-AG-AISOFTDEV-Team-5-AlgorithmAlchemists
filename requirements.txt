@@ -11,3 +11,9 @@ mypy
 bandit
 pip-audit
 cyclonedx-bom
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-otlp
+orjson
+locust
