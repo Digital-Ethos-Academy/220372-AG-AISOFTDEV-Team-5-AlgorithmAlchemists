@@ -36,3 +36,11 @@ class QuizQuestion(SQLModel, table=True):
     question_text: str
     correct_answer: str
     tenant_id: str = Field(default="default", index=True)
+
+
+class User(SQLModel, table=True):
+    id: str = Field(primary_key=True, index=True)
+    role: str
+    tenure_days: int = Field(default=0, ge=0)
+    activity_state: str = Field(default="active")  # active | drifting | idle
+    tenant_id: str = Field(default="default", index=True)

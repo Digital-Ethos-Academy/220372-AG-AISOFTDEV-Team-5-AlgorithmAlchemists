@@ -35,9 +35,9 @@ from app.audit import AuditMiddleware  # noqa: E402
 from app.flags import is_enabled  # noqa: E402
 from app.settings import settings  # noqa: E402
 from app.runtime_metrics import aggregator  # noqa: E402
-from app.recommendation_engine import recommend_for_user  # noqa: E402
+from app.recommendation_engine import recommend_for_user, debug_candidates, UserContext  # noqa: E402
 from app.db import init_db, get_session, engine  # noqa: E402
-from app.db_models import Team, ProjectFact, QuizQuestion  # noqa: E402
+from app.db_models import Team, ProjectFact, QuizQuestion, User  # noqa: E402
 from sqlmodel import Session, select  # noqa: E402
 from app.retrieval import get_retriever  # noqa: E402
 
@@ -135,10 +135,28 @@ def _startup_seed() -> None:
         if s.exec(select(QuizQuestion)).first() is None:
             for i in range(1, 16):
                 s.add(QuizQuestion(id=f"Q{i}", fact_id="F1" if i % 2 == 0 else "F2", question_text=f"Question {i}", correct_answer="answer"))
+        if s.exec(select(User)).first() is None:
+            s.add(User(id="u1", role="API Engineer", tenure_days=10, activity_state="active"))
+            s.add(User(id="u2", role="Docs Writer", tenure_days=5, activity_state="drifting"))
+            s.add(User(id="u3", role="Generalist", tenure_days=40, activity_state="idle"))
         s.commit()
 
-def _teams(session: Session) -> List[TeamModel]:
-    results = session.exec(select(Team)).all()
+ADMIN_TOKEN_ENV = "ADMIN_API_KEY"
+
+def require_admin(x_admin_token: str | None = Header(default=None)):
+    import os
+    expected = os.getenv(ADMIN_TOKEN_ENV)
+    if not expected:
+        raise HTTPException(status_code=500, detail="Admin token not configured")
+    if x_admin_token != expected:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return True
+
+def get_tenant_id(x_tenant_id: str | None = Header(default=None)) -> str:
+    return x_tenant_id or "default"
+
+def _teams(session: Session, tenant_id: str) -> List[TeamModel]:
+    results = session.exec(select(Team).where(Team.tenant_id == tenant_id)).all()
     return [TeamModel(id=t.id, name=t.name, mission=t.mission, responsibilities=t.responsibilities, parent_team_id=t.parent_team_id, tenant_id=t.tenant_id) for t in results]
 
 def _quiz_questions(session: Session) -> List[QuizQuestionModel]:
@@ -160,14 +178,14 @@ def get_overview(session: Session = Depends(get_session)):
     )
 
 @app.get("/org", response_model=OrgResponse, tags=["org"])
-def get_org(session: Session = Depends(get_session)):
-    return OrgResponse(teams=_teams(session))
+def get_org(session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id)):
+    return OrgResponse(teams=_teams(session, tenant_id))
 
 @app.get("/roles", response_model=RolesLookupResponse, tags=["roles"])
-def role_lookup(query: str, session: Session = Depends(get_session)):
+def role_lookup(query: str, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id)):
     # Simple match: include all teams with score 1.0 if query in name else 0.5 baseline
     matches = []
-    for t in _teams(session):
+    for t in _teams(session, tenant_id):
         score = 1.0 if query.lower() in t.name.lower() else 0.5
         if score >= 0.5:
             matches.append(RolesMatch(team_id=t.id, team_name=t.name, score=score))
@@ -187,10 +205,14 @@ def qa(question: str, session: Session = Depends(get_session)):
     )
 
 @app.post("/recommendation", response_model=RecommendationResponse, tags=["recommendation"])
-def recommend(user_id: str, session: Session = Depends(get_session)):
+def recommend(user_id: str, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id)):
     if settings.rec_disable:
         raise HTTPException(status_code=503, detail="Recommendation feature disabled")
-    return recommend_for_user(user_id, _teams(session))
+    user_row = session.get(User, user_id)
+    user_ctx = None
+    if user_row:
+        user_ctx = UserContext(user_id=user_row.id, role=user_row.role, tenure_days=user_row.tenure_days, activity_state=user_row.activity_state)
+    return recommend_for_user(user_id, _teams(session, tenant_id), user=user_ctx)
 
 @app.get("/quiz", response_model=QuizListResponse, tags=["quiz"])
 def get_quiz(session: Session = Depends(get_session)):
@@ -237,35 +259,35 @@ def get_metrics():
     return MetricsResponse(baseline_hours=baseline, tool_hours=tool, compression_pct=compression, quiz_accuracy=1.0, confidence_coverage=0.98)
 
 @app.get("/gaps", response_model=GapsResponse, tags=["gaps"])
-def get_gaps(session: Session = Depends(get_session)):
+def get_gaps(session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id)):
     gap_items = [
         {"team_id": "T5", "type": "missing_mission", "detail": "Mission statement not defined"}
     ]
-    summary = GapsSummary(total_teams=len(_teams(session)), gap_count=len(gap_items), stale_threshold_days=180)
+    summary = GapsSummary(total_teams=len(_teams(session, tenant_id)), gap_count=len(gap_items), stale_threshold_days=180)
     return GapsResponse(gaps=gap_items, summary=summary)
 
 @app.get("/qa/fallback", response_model=FallbackQAResponse, tags=["qa"])
 def qa_fallback(question: str):
     return FallbackQAResponse(question=question, escalation="Consult Mentor", confidence=0.5)
 
-# ---------------------- Admin CRUD Endpoints (no auth yet; future flag) ----------------------
+# ---------------------- Admin & Debug Endpoints (API key protected) ----------------------
 
 @app.get("/admin/teams", response_model=List[TeamModel], tags=["admin"])
-def list_teams(session: Session = Depends(get_session)):
-    return _teams(session)
+def list_teams(session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id), _: bool = Depends(require_admin)):
+    return _teams(session, tenant_id)
 
 @app.post("/admin/teams", response_model=TeamModel, tags=["admin"])
-def create_team(payload: TeamCreate, session: Session = Depends(get_session)):
+def create_team(payload: TeamCreate, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id), _: bool = Depends(require_admin)):
     if session.get(Team, payload.id):
         raise HTTPException(status_code=409, detail="Team ID exists")
-    t = Team(id=payload.id, name=payload.name, mission=payload.mission, responsibilities=payload.responsibilities, parent_team_id=payload.parent_team_id, tenant_id=payload.tenant_id or "default")
+    t = Team(id=payload.id, name=payload.name, mission=payload.mission, responsibilities=payload.responsibilities, parent_team_id=payload.parent_team_id, tenant_id=payload.tenant_id or tenant_id)
     session.add(t)
     session.commit()
     session.refresh(t)
     return TeamModel(**t.model_dump())
 
 @app.patch("/admin/teams/{team_id}", response_model=TeamModel, tags=["admin"])
-def update_team(team_id: str, payload: TeamUpdate, session: Session = Depends(get_session)):
+def update_team(team_id: str, payload: TeamUpdate, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     t = session.get(Team, team_id)
     if not t:
         raise HTTPException(status_code=404, detail="Not found")
@@ -279,7 +301,7 @@ def update_team(team_id: str, payload: TeamUpdate, session: Session = Depends(ge
     return TeamModel(**t.model_dump())
 
 @app.delete("/admin/teams/{team_id}", tags=["admin"], status_code=204)
-def delete_team(team_id: str, session: Session = Depends(get_session)):
+def delete_team(team_id: str, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     t = session.get(Team, team_id)
     if not t:
         raise HTTPException(status_code=404, detail="Not found")
@@ -288,12 +310,12 @@ def delete_team(team_id: str, session: Session = Depends(get_session)):
     return None
 
 @app.get("/admin/facts", response_model=List[FactModel], tags=["admin"])
-def list_facts(session: Session = Depends(get_session)):
+def list_facts(session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     facts = session.exec(select(ProjectFact)).all()
     return [FactModel(id=f.id, category=f.category, fact_text=f.fact_text, tenant_id=f.tenant_id) for f in facts]
 
 @app.post("/admin/facts", response_model=FactModel, tags=["admin"])
-def create_fact(payload: FactCreate, session: Session = Depends(get_session)):
+def create_fact(payload: FactCreate, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     if session.get(ProjectFact, payload.id):
         raise HTTPException(status_code=409, detail="Fact ID exists")
     f = ProjectFact(**payload.model_dump(exclude_none=True))
@@ -303,7 +325,7 @@ def create_fact(payload: FactCreate, session: Session = Depends(get_session)):
     return FactModel(id=f.id, category=f.category, fact_text=f.fact_text, tenant_id=f.tenant_id)
 
 @app.patch("/admin/facts/{fact_id}", response_model=FactModel, tags=["admin"])
-def update_fact(fact_id: str, payload: FactUpdate, session: Session = Depends(get_session)):
+def update_fact(fact_id: str, payload: FactUpdate, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     f = session.get(ProjectFact, fact_id)
     if not f:
         raise HTTPException(status_code=404, detail="Not found")
@@ -317,7 +339,7 @@ def update_fact(fact_id: str, payload: FactUpdate, session: Session = Depends(ge
     return FactModel(id=f.id, category=f.category, fact_text=f.fact_text, tenant_id=f.tenant_id)
 
 @app.delete("/admin/facts/{fact_id}", status_code=204, tags=["admin"])
-def delete_fact(fact_id: str, session: Session = Depends(get_session)):
+def delete_fact(fact_id: str, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     f = session.get(ProjectFact, fact_id)
     if not f:
         raise HTTPException(status_code=404, detail="Not found")
@@ -326,11 +348,11 @@ def delete_fact(fact_id: str, session: Session = Depends(get_session)):
     return None
 
 @app.get("/admin/quiz/questions", response_model=List[QuizQuestionModel], tags=["admin"])
-def list_quiz_questions(session: Session = Depends(get_session)):
+def list_quiz_questions(session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     return _quiz_questions(session)
 
 @app.post("/admin/quiz/questions", response_model=QuizQuestionModel, tags=["admin"])
-def create_quiz_question(payload: QuizQuestionCreate, session: Session = Depends(get_session)):
+def create_quiz_question(payload: QuizQuestionCreate, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     if session.get(QuizQuestion, payload.id):
         raise HTTPException(status_code=409, detail="Question ID exists")
     q = QuizQuestion(**payload.model_dump(exclude_none=True))
@@ -340,7 +362,7 @@ def create_quiz_question(payload: QuizQuestionCreate, session: Session = Depends
     return QuizQuestionModel(id=q.id, question_text=q.question_text)
 
 @app.patch("/admin/quiz/questions/{question_id}", response_model=QuizQuestionModel, tags=["admin"])
-def update_quiz_question(question_id: str, payload: QuizQuestionUpdate, session: Session = Depends(get_session)):
+def update_quiz_question(question_id: str, payload: QuizQuestionUpdate, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     q = session.get(QuizQuestion, question_id)
     if not q:
         raise HTTPException(status_code=404, detail="Not found")
@@ -354,10 +376,18 @@ def update_quiz_question(question_id: str, payload: QuizQuestionUpdate, session:
     return QuizQuestionModel(id=q.id, question_text=q.question_text)
 
 @app.delete("/admin/quiz/questions/{question_id}", status_code=204, tags=["admin"])
-def delete_quiz_question(question_id: str, session: Session = Depends(get_session)):
+def delete_quiz_question(question_id: str, session: Session = Depends(get_session), _: bool = Depends(require_admin)):
     q = session.get(QuizQuestion, question_id)
     if not q:
         raise HTTPException(status_code=404, detail="Not found")
     session.delete(q)
     session.commit()
     return None
+
+@app.get("/admin/recommendation/debug", tags=["admin"])
+def recommendation_debug(user_id: str, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id), _: bool = Depends(require_admin)):
+    user_row = session.get(User, user_id)
+    user_ctx = None
+    if user_row:
+        user_ctx = UserContext(user_id=user_row.id, role=user_row.role, tenure_days=user_row.tenure_days, activity_state=user_row.activity_state)
+    return {"candidates": debug_candidates(user_id, _teams(session, tenant_id), user=user_ctx)}
