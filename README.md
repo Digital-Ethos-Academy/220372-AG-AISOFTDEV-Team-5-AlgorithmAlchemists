@@ -121,8 +121,31 @@ pytest -q              # backend tests
 cd frontend && npm run lint && npm test -- --watchAll=false
 ```
 
-### Docker (Optional Future)
-`docker compose` definition pending; current Dockerfile (backend) can be built manually.
+### Docker (Single Container Demo)
+Build (multi-stage: installs backend + builds frontend and serves at `/`):
+```bash
+docker build -t poi-compass .
+docker run -p 8000:8000 --env-file .env poi-compass
+# Visit http://localhost:8000 (frontend) and /docs for API
+```
+
+### Docker Compose (One Service)
+```bash
+docker compose up --build
+```
+Environment: copy `.env.example` → `.env` (leave AI keys blank for demo).
+
+### CORS Configuration
+Set `CORS_ORIGINS="https://demo.example.com,https://admin.example.com"` for restricted origins (defaults to `*` for local demo).
+
+### Schema Conformance Tests
+Run unified schema validation:
+```bash
+pytest -q -k schema_conformance
+```
+
+### Accessibility Skip Link
+Implemented via `<a class="skip-link">` in `PageShell`; visible on keyboard focus.
 
 ## 9. Testing (Implemented Set)
 Current suite (non‑exhaustive) covers: quiz scoring, recommendation scoring & ordering, fallback escalation (<0.85), runtime metrics snapshot, audit log write, gap detection simulation, feature flag disable behavior, schema conformance.

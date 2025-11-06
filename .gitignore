@@ -24,6 +24,9 @@ yarn-error.log*
 # Build outputs
 /dist/
 /build/
+frontend/build/
+frontend/storybook-static/
+logs/
 
 # ---- IDE / Editor ----
 .vscode/

@@ -1,5 +1,6 @@
 from typing import List
 from fastapi import FastAPI, HTTPException, Header
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import (
     FallbackQAResponse,
@@ -33,6 +34,17 @@ if settings.poi_observability:  # enabled by default via settings
     init_observability(app)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(AuditMiddleware)
+
+# CORS configuration (permissive by default for demo; tighten via CORS_ORIGINS env)
+import os as _os  # local alias to avoid name collision above
+_origins = [o.strip() for o in _os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()] or ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 from fastapi.responses import JSONResponse  # noqa: E402
 from fastapi import Request  # noqa: E402
