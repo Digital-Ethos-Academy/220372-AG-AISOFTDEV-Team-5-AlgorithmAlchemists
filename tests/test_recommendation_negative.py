@@ -13,7 +13,12 @@ def test_recommendation_invalid_user():
 
 def test_recommendation_no_candidates():
     """Test recommendation endpoint when no candidates are available."""
-    resp = client.post("/recommendation", params={"user_id": "demo-user-no-candidates"})
+    # Use a tenant with no seeded teams to force empty candidate list
+    resp = client.post(
+        "/recommendation",
+        params={"user_id": "demo-user-no-candidates"},
+        headers={"X-Tenant-Id": "empty"},
+    )
     assert resp.status_code == 200
     data = resp.json()
     assert data["confidence"] == 0.0

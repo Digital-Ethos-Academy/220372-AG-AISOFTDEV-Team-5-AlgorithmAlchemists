@@ -44,7 +44,8 @@ class RecommendationBreakdown(BaseModel):
     description: str
 
 class RecommendationResponse(BaseModel):
-    selected_team_id: str
+    # Allow None when no candidates are available (negative path)
+    selected_team_id: Optional[str] = None
     confidence: float = Field(ge=0, le=1)
     rationale: str
     explanation_breakdown: List[RecommendationBreakdown]
