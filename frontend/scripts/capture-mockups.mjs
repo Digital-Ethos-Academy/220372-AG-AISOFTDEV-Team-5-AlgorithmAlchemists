@@ -3,6 +3,8 @@
 import { chromium } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
+import http from 'http';
+import url from 'url';
 
 // Story IDs to capture – extend as new visual states are introduced
 const stories = [
@@ -30,9 +32,41 @@ const stories = [
 const outDir = path.join(process.cwd(), '..', 'docs', 'mockups');
 if(!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-const base = 'file://' + path.join(process.cwd(), 'storybook-static');
+const staticDir = path.join(process.cwd(), 'storybook-static');
+if(!fs.existsSync(staticDir)) {
+  console.error('storybook-static directory not found. Run `npm run build-storybook` first.');
+  process.exit(1);
+}
+
+function startStaticServer(baseDir){
+  return new Promise(resolve => {
+    const server = http.createServer((req,res)=>{
+      const parsed = url.parse(req.url);
+      let safePath = path.normalize(decodeURIComponent(parsed.pathname));
+      if(safePath.startsWith('..')) { res.statusCode=400; return res.end('Bad path'); }
+      let filePath = path.join(baseDir, safePath);
+      if(fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+        filePath = path.join(filePath, 'index.html');
+      }
+      fs.readFile(filePath,(err,data)=>{
+        if(err){ res.statusCode=404; return res.end('Not found'); }
+        // rudimentary content-type
+        if(filePath.endsWith('.js')) res.setHeader('Content-Type','text/javascript');
+        if(filePath.endsWith('.css')) res.setHeader('Content-Type','text/css');
+        if(filePath.endsWith('.html')) res.setHeader('Content-Type','text/html');
+        res.end(data);
+      });
+    });
+    server.listen(0, ()=>{
+      const { port } = server.address();
+      resolve({ server, port });
+    });
+  });
+}
 
 (async () => {
+  const { server, port } = await startStaticServer(staticDir);
+  const base = `http://localhost:${port}`;
   let browser;
   try {
     browser = await chromium.launch();
@@ -58,14 +92,23 @@ const base = 'file://' + path.join(process.cwd(), 'storybook-static');
   }
   const page = await browser.newPage({ viewport:{ width:1280, height:800 }});
   for (const s of stories) {
-    const url = `${base}/iframe.html?id=${s.id}`;
-    console.log('Capturing', s.id);
-    await page.goto(url, { waitUntil:'load' });
-    // allow layout paint
-    await page.waitForTimeout(400);
-    const filePath = path.join(outDir, `${s.name}.png`);
-    await page.screenshot({ path: filePath, fullPage: true });
+    const storyUrl = `${base}/iframe.html?id=${s.id}&viewMode=story`;
+    console.log('Capturing', s.id, '->', storyUrl);
+    try {
+      await page.goto(storyUrl, { waitUntil:'domcontentloaded' });
+      await page.waitForSelector('#storybook-root', { timeout: 5000 });
+      await page.evaluate(()=>{
+        // force neutral background for visibility
+        document.body.style.background = '#1e1e1e';
+      });
+      await page.waitForTimeout(600); // allow story render
+      const filePath = path.join(outDir, `${s.name}.png`);
+      await page.screenshot({ path: filePath, fullPage: true });
+    } catch (err) {
+      console.error('Failed to capture', s.id, err.message);
+    }
   }
   await browser.close();
+  server.close();
   console.log('Mockup screenshots saved to', outDir);
 })();
