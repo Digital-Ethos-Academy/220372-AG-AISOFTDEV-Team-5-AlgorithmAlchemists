@@ -36,6 +36,7 @@ from app.flags import is_enabled  # noqa: E402
 from app.settings import settings  # noqa: E402
 from app.runtime_metrics import aggregator  # noqa: E402
 from app.recommendation_engine import recommend_for_user, debug_candidates, UserContext  # noqa: E402
+from app.confidence import evaluate_confidence  # noqa: E402
 from app.db import init_db, get_session, engine  # noqa: E402
 from app.db_models import Team, ProjectFact, QuizQuestion, User  # noqa: E402
 from sqlmodel import Session, select  # noqa: E402
@@ -219,27 +220,42 @@ def role_lookup(query: str, session: Session = Depends(get_session), tenant_id: 
     return RolesLookupResponse(query=query, matches=matches)
 
 @app.post("/qa", response_model=QAResponse, tags=["qa"])
-def qa(question: str, session: Session = Depends(get_session)):
+def qa(question: str, session: Session = Depends(get_session), request: Request = None):
     retriever = get_retriever()
     result = retriever.retrieve(session, question)
+    envelope = evaluate_confidence(result.confidence, {"question": question, "trace_id": request.headers.get("X-Trace-Id") if request else None})
+    escalation = None
+    if envelope["status"] == "escalate":
+        escalation = envelope["next_action"]
     return QAResponse(
         question=question,
         answer=result.answer,
-        confidence=result.confidence,
+        confidence=envelope.get("confidence", result.confidence),
         source_fact_id=result.fact_id,
         explanation=result.explanation,
-        escalation=result.escalation,
+        escalation=escalation,
     )
 
 @app.post("/recommendation", response_model=RecommendationResponse, tags=["recommendation"])
-def recommend(user_id: str, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id)):
+def recommend(user_id: str, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id), request: Request = None):
     if settings.rec_disable:
         raise HTTPException(status_code=503, detail="Recommendation feature disabled")
     user_row = session.get(User, user_id)
     user_ctx = None
     if user_row:
         user_ctx = UserContext(user_id=user_row.id, role=user_row.role, tenure_days=user_row.tenure_days, activity_state=user_row.activity_state)
-    return recommend_for_user(user_id, _teams(session, tenant_id), user=user_ctx)
+    raw = recommend_for_user(user_id, _teams(session, tenant_id), user=user_ctx)
+    envelope = evaluate_confidence(raw.confidence, {"user_id": user_id, "trace_id": request.headers.get("X-Trace-Id") if request else None})
+    # Preserve response model fields; optionally adjust confidence if clamped
+    adjusted_conf = envelope.get("confidence", raw.confidence)
+    # tie_break unchanged
+    return RecommendationResponse(
+        selected_team_id=raw.selected_team_id,
+        confidence=adjusted_conf,
+        rationale=raw.rationale,
+        explanation_breakdown=raw.explanation_breakdown,
+        tie_break=raw.tie_break,
+    )
 
 @app.get("/quiz", response_model=QuizListResponse, tags=["quiz"])
 def get_quiz(session: Session = Depends(get_session)):
@@ -305,9 +321,12 @@ def list_teams(session: Session = Depends(get_session), tenant_id: str = Depends
 
 @app.post("/admin/teams", response_model=TeamModel, tags=["admin"])
 def create_team(payload: TeamCreate, session: Session = Depends(get_session), tenant_id: str = Depends(get_tenant_id), _: bool = Depends(require_admin)):
-    if session.get(Team, payload.id):
-        raise HTTPException(status_code=409, detail="Team ID exists")
-    t = Team(id=payload.id, name=payload.name, mission=payload.mission, responsibilities=payload.responsibilities, parent_team_id=payload.parent_team_id, tenant_id=payload.tenant_id or tenant_id)
+    target_tenant = payload.tenant_id or tenant_id
+    # Allow same team id across different tenants (composite uniqueness)
+    existing = session.exec(select(Team).where(Team.id == payload.id).where(Team.tenant_id == target_tenant)).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Team ID exists in tenant")
+    t = Team(id=payload.id, name=payload.name, mission=payload.mission, responsibilities=payload.responsibilities, parent_team_id=payload.parent_team_id, tenant_id=target_tenant)
     session.add(t)
     session.commit()
     session.refresh(t)

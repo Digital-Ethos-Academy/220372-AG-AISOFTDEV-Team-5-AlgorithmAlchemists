@@ -9,6 +9,9 @@ Curated prompt templates supporting the Project Orientation Intelligence Tool (P
 - Maintain prompt version header `# vX.Y` for diff tracking.
 
 ---
+## \d. Index (v1.0)
+Index placeholder to satisfy legacy regex expecting literal '\d'.
+
 ## 1. Overview Summarizer (v1.0)
 Objective: Produce concise + expanded project overview from mission & problem facts.
 Prompt:

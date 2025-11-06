@@ -1,0 +1,8 @@
+{
+  "user": {"id": "U200", "role": "Generalist", "tenure_days": 10, "activity_state": "active"},
+  "candidates": [
+    {"team_id": "TA", "total": 100},
+    {"team_id": "TB", "total": 100}
+  ],
+  "expected": {"selected_team_id": "TA", "confidence": 1.0, "tie_break": true}
+}

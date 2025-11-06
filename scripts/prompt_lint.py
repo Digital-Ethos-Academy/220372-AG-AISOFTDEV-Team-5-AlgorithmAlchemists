@@ -12,7 +12,8 @@ import pathlib
 import sys
 
 REQUIRED = {"id", "name", "version", "owners", "description"}
-HIGH_IMPACT_NAMES = {"recommendation", "metrics-explainer"}
+HIGH_IMPACT_NAMES = {"recommendation", "metrics-explainer", "qa"}
+HIGH_RISK_LEVELS = {"high", "critical"}
 
 def parse_frontmatter(text: str) -> dict:
     if not text.startswith("---"):
@@ -39,8 +40,12 @@ def main() -> int:
         if absent:
             missing[file.name] = sorted(absent)
         name = fm.get('name', '')
-        if name in HIGH_IMPACT_NAMES and 'risk_level' not in fm:
-            warnings.append(f"{file.name}: missing risk_level for high-impact prompt")
+        if name in HIGH_IMPACT_NAMES:
+            rl = fm.get('risk_level')
+            if not rl:
+                warnings.append(f"{file.name}: missing risk_level for high-impact prompt")
+            elif rl in HIGH_RISK_LEVELS and 'rationale' not in fm:
+                warnings.append(f"{file.name}: missing rationale line for {rl} risk prompt")
     if warnings:
         print("WARNINGS:")
         for w in warnings:

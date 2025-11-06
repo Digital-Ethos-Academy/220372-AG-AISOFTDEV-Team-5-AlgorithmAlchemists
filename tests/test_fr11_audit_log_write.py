@@ -17,7 +17,8 @@ def test_fr11_audit_log_write_after_request(tmp_path):
     lines = AUDIT_PATH.read_text(encoding="utf-8").strip().splitlines()
     assert len(lines) >= 1
     last = json.loads(lines[-1])
-    for key in ["ts", "trace_id", "method", "path", "status", "duration_ms"]:
+    # Updated schema-aligned keys
+    for key in ["ts", "trace_id", "user_id", "method", "path", "status_code", "latency_ms"]:
         assert key in last
     assert last["path"] == "/health"
-    assert last["status"] == 200
+    assert last["status_code"] == 200

@@ -1,0 +1,4 @@
+{
+  "question": "orientation",
+  "expected": {"min_confidence": 0.85}
+}

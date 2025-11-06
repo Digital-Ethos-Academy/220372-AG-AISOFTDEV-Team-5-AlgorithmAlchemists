@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AuditLogEntry",
+  "type": "object",
+  "required": ["ts", "trace_id", "user_id", "method", "path", "status_code", "latency_ms"],
+  "properties": {
+    "ts": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"},
+    "trace_id": {"type": ["string", "null"]},
+    "user_id": {"type": ["string", "null"]},
+    "method": {"type": "string"},
+    "path": {"type": "string"},
+    "status_code": {"type": "integer", "minimum": 100, "maximum": 599},
+    "latency_ms": {"type": "number", "minimum": 0},
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "additional": {"type": ["object", "null"]}
+  },
+  "additionalProperties": true
+}

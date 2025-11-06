@@ -1,0 +1,9 @@
+{
+  "expected": {
+    "baseline_hours": 56.0,
+    "tool_hours": 20.0,
+    "compression_pct": 64.29,
+    "quiz_accuracy": 1.0,
+    "confidence_coverage": 0.98
+  }
+}

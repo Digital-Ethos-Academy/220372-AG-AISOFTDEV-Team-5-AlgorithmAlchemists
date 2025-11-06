@@ -19,3 +19,4 @@ orjson
 locust
 pip-licenses
 sqlmodel==0.0.14
+pre-commit
