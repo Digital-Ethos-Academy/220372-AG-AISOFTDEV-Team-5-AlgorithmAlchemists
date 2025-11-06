@@ -1,7 +1,32 @@
 # POI Compass UI Mockups & Interaction Notes
 
+## Rendered Component Screenshots (Current Storybook Export)
+The following images are generated automatically via Playwright screenshot capture of Storybook stories (`mockups:screenshots`). They represent key visual states and supplement (not replace) the structural ASCII layouts further below.
+
+| Overview & Layout | Metrics Cards | Metrics Healthy | Metrics Degraded |
+|-------------------|--------------|-----------------|------------------|
+| ![Overview Shell](mockups/overview-shell.png) | ![Metrics Cards](mockups/metrics-cards.png) | ![Metrics Healthy](mockups/metrics-healthy.png) | ![Metrics Degraded](mockups/metrics-degraded.png) |
+
+| Score High | Score Medium | Score Low | QA High |
+|------------|--------------|-----------|---------|
+| ![Score High](mockups/scorebar-high.png) | ![Score Medium](mockups/scorebar-medium.png) | ![Score Low](mockups/scorebar-low.png) | ![QA High](mockups/qa-high.png) |
+
+| QA Low Fallback | QA Escalated | Roles Empty | Roles Results |
+|-----------------|--------------|-------------|---------------|
+| ![QA Low Fallback](mockups/qa-low-fallback.png) | ![QA Escalated](mockups/qa-escalated.png) | ![Roles Empty](mockups/roles-empty.png) | ![Roles Results](mockups/roles-results.png) |
+
+| Roles None | Runtime Metrics | Runtime Unauthorized | Quiz Perfect |
+|------------|-----------------|----------------------|--------------|
+| ![Roles None](mockups/roles-none.png) | ![Runtime Metrics](mockups/runtime-metrics.png) | ![Runtime Unauthorized](mockups/runtime-metrics-unauthorized.png) | ![Quiz Perfect](mockups/quiz-perfect.png) |
+
+| Quiz Validation |
+|-----------------|
+| ![Quiz Validation](mockups/quiz-validation.png) |
+
+---
+
 Version: 0.1 (increment when altering structural layout)
-Status: Prototype reference (not pixel-perfect)
+Status: Prototype reference (not pixel-perfect). Screenshot set version aligns with `CHANGELOG.md` 1.0.7 (unreleased) story coverage.
 
 ## Legend
 - [A] Primary Action / Button
