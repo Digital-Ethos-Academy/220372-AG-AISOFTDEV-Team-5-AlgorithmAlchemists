@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  poi-app:
+    build: .
+    container_name: poi-app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Fallback to disable sensitive features unless explicitly set
+      - REC_DISABLE=${REC_DISABLE:-0}
+      - QUIZ_DISABLE=${QUIZ_DISABLE:-0}
+      - POI_OBSERVABILITY=${POI_OBSERVABILITY:-1}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# For local iteration only; not recommended to commit secrets. Use .env.example as template.

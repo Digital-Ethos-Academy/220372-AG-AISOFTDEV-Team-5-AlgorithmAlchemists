@@ -36,6 +36,23 @@ app.add_middleware(AuditMiddleware)
 
 from fastapi.responses import JSONResponse  # noqa: E402
 from fastapi import Request  # noqa: E402
+from fastapi.staticfiles import StaticFiles  # noqa: E402
+import os  # noqa: E402
+# Serve built frontend if present (single-container deploy)
+FRONTEND_DIR = os.path.join(os.path.dirname(__file__), "..", "frontend_build")
+if os.path.isdir(FRONTEND_DIR):
+    # Mount at /app for static assets, and root index fallback via simple route
+    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+    @app.get("/", include_in_schema=False)
+    async def root_index():
+        index_path = os.path.join(FRONTEND_DIR, "index.html")
+        if os.path.exists(index_path):
+            with open(index_path, "r", encoding="utf-8") as f:
+                return HTMLResponse(f.read())
+        return {"message": "Frontend build not found"}
+
+from fastapi.responses import HTMLResponse  # noqa: E402
 
 
 @app.exception_handler(Exception)
@@ -148,12 +165,27 @@ def submit_quiz(answers: str):
         raise HTTPException(status_code=503, detail="Quiz feature disabled")
     """Submit quiz answers.
 
-    Accepts a single comma-separated string of answer IDs via query param `answers`.
-    Example: /quiz/submit?answers=Q1,Q2,Q3
+    Supported formats (query param `answers`):
+      1. Comma-separated question IDs: `Q1,Q2,Q3` (legacy / tests)
+      2. Pipe-separated id:value pairs: `Q1:answer one|Q2:answer two|...` (frontend form)
+
+    For demo scoring we only validate presence of all question IDs; answer text
+    is ignored (deterministic perfect score scenario when all IDs supplied).
     """
-    provided_ids = [a.strip() for a in answers.split(",") if a.strip()]
+    provided_ids: list[str] = []
+    if "|" in answers:
+        # Frontend style id:value pairs
+        for segment in answers.split("|"):
+            if not segment.strip():
+                continue
+            parts = segment.split(":", 1)
+            qid = parts[0].strip()
+            if qid:
+                provided_ids.append(qid)
+    else:
+        provided_ids = [a.strip() for a in answers.split(",") if a.strip()]
+
     correct_ids = [q.id for q in QUIZ_QUESTIONS]
-    # Score is number of correct IDs present in provided set
     score = sum(1 for cid in correct_ids if cid in provided_ids)
     return QuizSubmitResponse(score=score, correct=correct_ids, total=len(QUIZ_QUESTIONS))
 
