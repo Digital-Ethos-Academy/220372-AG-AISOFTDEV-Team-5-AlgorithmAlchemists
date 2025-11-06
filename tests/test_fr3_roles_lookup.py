@@ -1,7 +1,9 @@
-from fastapi.testclient import TestClient
-from app.main import app
-from jsonschema import validate
 import json
+
+from fastapi.testclient import TestClient
+from jsonschema import validate
+
+from app.main import app
 
 with open("schemas/roles.schema.json") as f:
     SCHEMA = json.load(f)

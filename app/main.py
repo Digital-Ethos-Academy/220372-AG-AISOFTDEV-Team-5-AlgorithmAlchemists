@@ -1,11 +1,24 @@
-from fastapi import FastAPI
-from app.models import (
-    OverviewResponse, OrgResponse, RolesLookupResponse, QAResponse,
-    RecommendationResponse, QuizListResponse, QuizSubmitResponse,
-    MetricsResponse, GapsResponse, FallbackQAResponse, TeamModel,
-    RolesMatch, RecommendationBreakdown, QuizQuestionModel, GapItem, GapsSummary
-)
 from typing import List
+
+from fastapi import FastAPI
+
+from app.models import (
+    FallbackQAResponse,
+    GapsResponse,
+    GapsSummary,
+    MetricsResponse,
+    OrgResponse,
+    OverviewResponse,
+    QAResponse,
+    QuizListResponse,
+    QuizQuestionModel,
+    QuizSubmitResponse,
+    RecommendationBreakdown,
+    RecommendationResponse,
+    RolesLookupResponse,
+    RolesMatch,
+    TeamModel,
+)
 
 app = FastAPI(title="POI Compass API", version="1.0.0")
 

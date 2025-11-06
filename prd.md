@@ -2,7 +2,7 @@
 
 ---
 doc_id: POIT-PRD
-version: 1.0.0
+version: 1.0.1
 status: Active
 owners: ["Product", "Engineering Lead", "Compliance"]
 last_reviewed: 2025-11-05
@@ -262,6 +262,7 @@ Compression = (56 - 20) / 56 * 100 = 64.29% (PASS ≥60%).
 |---------|------|--------|---------|
 | 0.1 | 2025-11-05 | Draft | Initial PRD creation |
 | 1.0.0 | 2025-11-05 | Product + Eng | Added governance, scoring schema, integration roadmap, traceability expansion |
+| 1.0.1 | 2025-11-05 | Product + Eng | Added quality gate scaffolding (lint, type, security, coverage), ADR 0001, backlog & issue templates, branch protection doc |
 
 ## 30. Integration Roadmap & Readiness Checklist
 ### 30.1 Priority Order (Demo -> Future)

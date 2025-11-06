@@ -22,13 +22,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint (ruff placeholder)
+      - name: Ruff Lint
         run: |
-          echo "Skipping ruff (not yet added)"
+          python -m ruff check .
 
-      - name: Run tests
+      - name: Mypy Type Check
         run: |
-          pytest --cov=app --maxfail=1 -q
+          mypy app
+
+      - name: Bandit Security Scan
+        run: |
+          bandit -q -r app || exit 1
+
+      - name: Dependency Vulnerability Scan
+        run: |
+          pip-audit -r requirements.txt || exit 1
+
+      - name: Prompt Governance Lint
+        run: |
+          python scripts/prompt_lint.py
+
+      - name: Run tests with coverage threshold
+        run: |
+          pytest --cov=app --cov-report=term --cov-fail-under=80 --maxfail=1 -q
 
       - name: Schema presence check
         run: |
@@ -37,3 +53,13 @@ jobs:
       - name: Secret scan placeholder
         run: |
           grep -R "OPENAI_API_KEY" -n . && echo "No key values present" || true
+
+      - name: Generate SBOM
+        run: |
+          cyclonedx-py -o sbom.json -r
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
