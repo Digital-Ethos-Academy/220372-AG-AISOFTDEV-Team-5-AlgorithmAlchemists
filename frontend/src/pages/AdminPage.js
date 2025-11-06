@@ -63,10 +63,13 @@ export default function AdminPage(){
 function DeleteBtn({ endpoint, onDone }){
   const [busy,setBusy] = useState(false);
   const del = ()=>{
-    if(busy) return; setBusy(true);
+    if(busy) return; 
+    // Simple confirmation for safety
+    if(!window.confirm('Confirm deletion? This cannot be undone.')) return;
+    setBusy(true);
     client.delete(endpoint).then(()=>onDone&&onDone()).catch(()=>{}).finally(()=>setBusy(false));
   };
-  return <button aria-label="Delete" onClick={del} disabled={busy} style={{background:'#521', color:'#fff', border:'none', padding:'2px 6px', marginLeft:4, borderRadius:3}}>×</button>;
+  return <button aria-label="Delete" onClick={del} disabled={busy} style={{background:'#521', color:'#fff', border:'none', padding:'2px 6px', marginLeft:4, borderRadius:3}} title="Delete">×</button>;
 }
 
 function CreateTeamForm({ onDone }){

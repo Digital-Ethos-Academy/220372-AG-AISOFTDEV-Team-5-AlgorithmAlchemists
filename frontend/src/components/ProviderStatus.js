@@ -8,12 +8,18 @@ export default function ProviderStatus(){
   if (error) return <p role="alert">Provider status error: {error}</p>;
   if (!data) return <p>Loading provider status…</p>;
   const providers = data.providers || {};
+  const now = Date.now();
   return (
     <div className="provider-status" aria-label="Provider availability">
       <h3 style={{marginTop:0}}>Providers</h3>
       <ul style={{listStyle:'none', padding:0, display:'flex', flexWrap:'wrap', gap:'0.5rem'}}>
         {Object.entries(providers).map(([name,enabled]) => (
-          <li key={name} style={{padding:'4px 8px', borderRadius:4, background: enabled? 'var(--success,#0a4)': 'var(--danger,#822)', color:'#fff'}} aria-label={`${name} provider ${enabled?'enabled':'missing'}`}>{name}{enabled?'✓':'✕'}</li>
+          <li
+            key={name}
+            style={{padding:'4px 8px', borderRadius:4, background: enabled? 'var(--success,#0a4)': 'var(--danger,#822)', color:'#fff'}}
+            aria-label={`${name} provider ${enabled?'enabled':'missing'}`}
+            title={`${name}: ${enabled?'enabled':'missing'}\nChecked ${new Date(now).toLocaleTimeString()}`}
+          >{name}{enabled?' ✓':' ✕'}</li>
         ))}
       </ul>
     </div>

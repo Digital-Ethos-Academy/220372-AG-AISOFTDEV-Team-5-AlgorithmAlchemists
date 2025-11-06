@@ -1,11 +1,15 @@
 # Multi-stage Dockerfile for POI Compass
 ##### Stage 1: Frontend build #####
 FROM node:20-alpine AS frontend-build
-WORKDIR /frontend
-COPY frontend/package*.json frontend/.
-RUN npm --prefix frontend install --omit=dev && npm --prefix frontend cache clean --force || true
-COPY frontend frontend
-RUN npm --prefix frontend run build
+WORKDIR /app/frontend
+# Copy dependency manifests
+COPY frontend/package*.json ./
+# Install production dependencies only (omit dev for smaller image); clean cache.
+RUN npm install --omit=dev && npm cache clean --force || true
+# Copy full frontend source
+COPY frontend ./
+# Build production assets into /app/frontend/build
+RUN npm run build
 
 ##### Stage 2: Backend #####
 FROM python:3.11-slim AS backend
@@ -18,7 +22,8 @@ COPY app app
 COPY scripts scripts
 
 # Copy built frontend static assets into backend image
-COPY --from=frontend-build /frontend/build ./frontend_build
+# Copy built frontend static assets into backend image
+COPY --from=frontend-build /app/frontend/build ./frontend_build
 
 # Optional: expose environment variables (documented in .env.example)
 ENV PORT=8000

@@ -1,0 +1,14 @@
+.trace-panel { position:fixed; bottom:6px; right:6px; background:#111a; backdrop-filter:blur(4px); color:#fff; font-size:11px; padding:4px 6px; border:1px solid #30363d; border-radius:6px; display:flex; align-items:center; gap:6px; z-index:400; }
+.trace-panel.open { width:360px; flex-direction:column; align-items:stretch; }
+.trace-toggle { background:#238636; color:#fff; border:none; border-radius:4px; padding:2px 6px; cursor:pointer; font-size:11px; }
+.trace-toggle:focus-visible { outline:2px solid var(--color-focus,#ffcc33); outline-offset:2px; }
+.trace-summary { font-family:monospace; opacity:0.85; }
+.trace-list { max-height:200px; overflow:auto; margin-top:4px; }
+.trace-list ul { list-style:none; margin:0; padding:0; }
+.trace-list li { padding:2px 0; display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
+.trace-list code { background:#222; padding:1px 3px; border-radius:3px; }
+.trace-list .status { min-width:30px; text-align:right; }
+.trace-list .latency { color:#58a6ff; }
+.trace-actions { display:flex; justify-content:flex-end; margin-top:4px; }
+.trace-btn { background:#444; color:#fff; border:none; padding:2px 6px; border-radius:4px; cursor:pointer; font-size:11px; }
+.trace-btn:hover { background:#666; }

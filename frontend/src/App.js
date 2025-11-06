@@ -9,6 +9,8 @@ import MetricsPage from './pages/MetricsPage';
 import RuntimeMetricsPage from './pages/RuntimeMetricsPage';
 import QAPage from './pages/QAPage';
 import NavBar from './components/NavBar';
+import ErrorBanner from './components/ErrorBanner';
+import TracePanel from './components/TracePanel';
 import PageShell from './components/PageShell';
 import Footer from './components/Footer';
 import AdminPage from './pages/AdminPage';
@@ -16,7 +18,8 @@ import AdminPage from './pages/AdminPage';
 export default function App(){
   return (
     <div className="app dark-theme">
-      <NavBar />
+      <ErrorBanner />
+  <NavBar />
       <main aria-label="Main content">
         <Routes>
           <Route path="/" element={<PageShell title="Overview"><OverviewPage/></PageShell>} />
@@ -31,6 +34,7 @@ export default function App(){
         </Routes>
       </main>
       <Footer />
+      <TracePanel />
     </div>
   );
 }

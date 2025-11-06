@@ -4,7 +4,15 @@ import client from '../api/client';
 export default function GapsPanel(){
   const [data,setData] = useState(null);
   const [error,setError] = useState(null);
-  useEffect(()=>{ client.get('/gaps').then(r=>setData(r.data)).catch(e=>setError(e.message)); },[]);
+  const [attempts,setAttempts] = useState(0);
+  useEffect(()=>{ 
+    let cancelled = false;
+    const fetch = () => client.get('/gaps')
+      .then(r=>{ if(cancelled) return; setData(r.data); })
+      .catch(e=>{ if(cancelled) return; setError(e.message); if(attempts < 1){ setAttempts(a=>a+1); setTimeout(fetch, 800); } });
+    fetch();
+    return ()=> { cancelled = true; };
+  },[attempts]);
   if(error) return <p role="alert">Gaps error: {error}</p>;
   if(!data) return <p>Loading gaps…</p>;
   return (
