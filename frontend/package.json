@@ -7,16 +7,46 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false",
-    "lint": "echo 'Add ESLint config later'"
+    "lint": "eslint src --ext .js,.jsx --max-warnings=0",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+  "mockups:export": "npm run build-storybook",
+  "mockups:screenshots": "npm run build-storybook && node scripts/capture-mockups.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
+    "react-scripts": "5.0.1",
+    "@testing-library/react": "14.0.0",
+    "@testing-library/jest-dom": "6.0.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-react": "7.33.2",
+  "@storybook/react-webpack5": "^8.6.14",
+    "@storybook/addon-essentials": "^8.1.0",
+    "@storybook/addon-interactions": "^8.1.0",
+    "@storybook/testing-library": "^0.2.2",
+    "@storybook/preset-create-react-app": "^8.6.14",
+    "storybook": "^8.1.0",
+    "@playwright/test": "^1.48.2"
   },
+  "proxy": "http://localhost:8000",
   "engines": {
     "node": ">=18"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
